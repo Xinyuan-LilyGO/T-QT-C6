@@ -114,17 +114,11 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 | Setting                               | Value                                 |
 | :-------------------------------: | :-------------------------------: |
 | Upload Speed                     | 921600                               |
-| USB Mode                           | Hardware CDC and JTAG     |
-| USB CDC On Boot                | Enabled                             |
-| USB Firmware MSC On Boot | Disabled                             |
-| USB DFU On Boot                | Disabled                             |
-| CPU Frequency                   | 240MHz (WiFi)                    |
-| Flash Mode                         | QIO 80MHz                         |
-| Flash Size                           | 16MB (128Mb)                     |
+| CPU Frequency                   | 160MHz                              |
+| Flash Mode                         | QIO                                   |
+| Flash Size                           | 4MB (32Mb)                     |
 | Core Debug Level                | None                                 |
-| PSRAM                                | OPI PSRAM                         |
-| Arduino Runs On                  | Core 1                               |
-| Events Run On                     | Core 1                               |
+| Partition Scheme                | Huge APP (3MB No OTA/1MB SPIFFS)                                 |
 
 6. Select the correct port.
 

@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-20 16:52:06
+ * @LastEditTime: 2023-12-20 17:07:41
  * @License: GPL 3.0
 -->
 
@@ -115,17 +115,11 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 | Setting                               | Value                                 |
 | :-------------------------------: | :-------------------------------: |
 | Upload Speed                     | 921600                               |
-| USB Mode                           | Hardware CDC and JTAG     |
-| USB CDC On Boot                | Enabled                             |
-| USB Firmware MSC On Boot | Disabled                             |
-| USB DFU On Boot                | Disabled                             |
-| CPU Frequency                   | 240MHz (WiFi)                    |
-| Flash Mode                         | QIO 80MHz                         |
-| Flash Size                           | 16MB (128Mb)                     |
+| CPU Frequency                   | 160MHz                              |
+| Flash Mode                         | QIO                                   |
+| Flash Size                           | 4MB (32Mb)                     |
 | Core Debug Level                | None                                 |
-| PSRAM                                | OPI PSRAM                         |
-| Arduino Runs On                  | Core 1                               |
-| Events Run On                     | Core 1                               |
+| Partition Scheme                | Huge APP (3MB No OTA/1MB SPIFFS)                                 |
 
 6. 选择正确的端口。
 
