@@ -87,11 +87,11 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 ## QuickStart
 
-## Attention: Currently, ESP32C6 can only be programmed using the Arduino IDE
+#### Attention: Currently, ESP32C6 can only be programmed using the Arduino IDE
 
 ### Examples Support
 
-<p align="center" width="50%">
+<p align="center" width="100%">
     <img src="image/TQT-C6_Example_Support.png" alt="example">
 </p>
 
