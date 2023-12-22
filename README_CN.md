@@ -90,7 +90,7 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 
 #### 注意事项：目前ESP32C6只能使用Arduino IDE进行编程
 
-### 例程支持
+### 示例支持
 
 <p align="center" width="100%">
     <img src="image/TQT-C6_Example_Support.png" alt="example">
