@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-20 17:07:41
+ * @LastEditTime: 2023-12-22 16:23:36
  * @License: GPL 3.0
 -->
 
@@ -89,6 +89,12 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 ## 快速开始
 
 ### 注意事项：目前ESP32C6只能使用Arduino IDE进行编程
+
+### 例程支持
+
+<p align="center" width="100%">
+    <img src="image/TQT-C6_Example_Support.png" alt="example">
+</p>
 
 ### PlatformIO
 1. 安装[VisualStudioCode](https://code.visualstudio.com/Download)，根据你的系统类型选择安装。
