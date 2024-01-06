@@ -1,21 +1,37 @@
 /*
- * @Description(CN): 
+ * @Description(CN):
  *      该程序用于测试TQT-C6正常工作时的最高功耗
  *
- * @Description(EN): 
- *      This program is used to test the maximum power consumption of 
+ * @Description(EN):
+ *      This program is used to test the maximum power consumption of
  *  TQT-C6 during normal operation.
  *
  * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-08-18 15:26:31
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-20 14:13:48
+ * @LastEditTime: 2024-01-06 15:12:02
  * @License: GPL 3.0
  */
 #include "Arduino_GFX_Library.h"
 #include "Arduino_DriveBus_Library.h"
 #include "pin_config.h"
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+#define WIFI_SSID "xinyuandianzi"
+#define WIFI_PASSWORD "AA15994823428"
+// #define WIFI_SSID "LilyGo-AABB"
+// #define WIFI_PASSWORD "xinyuandianzi"
+
+#define WIFI_CONNECT_WAIT_MAX 5000
+
+#define NTP_SERVER1 "pool.ntp.org"
+#define NTP_SERVER2 "time.nist.gov"
+#define GMT_OFFSET_SEC 8 * 3600 // Time zone setting function, written as 8 * 3600 in East Eighth Zone (UTC/GMT+8:00)
+#define DAY_LIGHT_OFFSET_SEC 0  // Fill in 3600 for daylight saving time, otherwise fill in 0
+
+bool Wifi_Connection_State;
 
 Arduino_DataBus *bus = new Arduino_HWSPI(
     LCD_DC /* DC */, LCD_CS /* CS */, LCD_SCLK /* SCK */, LCD_MOSI /* MOSI */, -1 /* MISO */); // Software SPI
@@ -39,6 +55,127 @@ std::unique_ptr<Arduino_IIC> ETA4662(new Arduino_ETA4662(IIC_Bus, ETA4662_DEVICE
 void Arduino_IIC_Touch_Interrupt(void)
 {
     CST816T->IIC_Interrupt_Flag = true;
+}
+
+void WIFI_STA_Test_Loop(void)
+{
+    gfx->fillScreen(BLACK);
+    gfx->setCursor(0, 0);
+    gfx->setTextSize(1);
+    gfx->setTextColor(GREEN);
+
+    String temp;
+    int wifi_num = 0;
+    uint64_t last_tick;
+
+    temp = "Scanning wifi";
+    gfx->print(temp);
+    WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
+    delay(100);
+
+    wifi_num = WiFi.scanNetworks();
+    if (wifi_num == 0)
+    {
+        temp = "\nWiFi scan complete !\nNo wifi discovered.\n";
+    }
+    else
+    {
+        temp = "\nWiFi scan complete !\n";
+        temp += wifi_num;
+        temp += " wifi discovered.\n\n";
+
+        for (int i = 0; i < wifi_num; i++)
+        {
+            temp += (i + 1);
+            temp += ": ";
+            temp += WiFi.SSID(i);
+            temp += " (";
+            temp += WiFi.RSSI(i);
+            temp += ")";
+            temp += (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " \n" : "*\n";
+            delay(10);
+        }
+    }
+
+    gfx->print(temp);
+
+    temp = "Connecting to ";
+    temp += WIFI_SSID;
+    temp += "\n";
+
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+    last_tick = millis();
+
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        temp += ".";
+
+        if (millis() - last_tick > WIFI_CONNECT_WAIT_MAX)
+        {
+            Wifi_Connection_State = false;
+            break;
+        }
+        else
+        {
+            Wifi_Connection_State = true;
+        }
+        delay(500); // 这个延时必须要有
+    }
+
+    if (Wifi_Connection_State == true)
+    {
+        temp += "\nThe connection was successful ! \nTakes: ";
+        temp += (String)(millis() - last_tick);
+        temp += " ms";
+    }
+    else
+    {
+        temp += "\nThe connection was fail !";
+    }
+
+    gfx->fillScreen(BLACK);
+    gfx->setCursor(0, 0);
+    gfx->print(temp);
+}
+
+void WIFI_Time(void)
+{
+    String temp;
+    gfx->fillRect(0, 0, 128, 60, WHITE);
+    gfx->setCursor(0, 10);
+
+    if (Wifi_Connection_State == true)
+    {
+        struct tm timeinfo;
+        if (!getLocalTime(&timeinfo, 10000))
+        {
+            temp = "Failed to obtain time!";
+        }
+        else
+        {
+            temp = "Get time success";
+            temp += "\nYear/Month: ";
+            temp += (String)(timeinfo.tm_year + 1900);
+            temp += "/";
+            temp += (String)(timeinfo.tm_mon + 1);
+            temp += "/";
+            temp += (String)timeinfo.tm_mday;
+            temp += "\nTime: ";
+            temp += (String)timeinfo.tm_hour;
+            temp += " : ";
+            temp += (String)timeinfo.tm_min;
+            temp += " : ";
+            temp += (String)timeinfo.tm_sec;
+        }
+    }
+    else
+    {
+        temp += "\n\nNot connected to the network";
+    }
+
+    gfx->print(temp);
 }
 
 void setup()
@@ -73,8 +210,11 @@ void setup()
     }
     Serial.println("ETA4662 initialization successfully");
 
+    // 注意！ 这里设置充电功能开，必须要接电池，否则系统电源总线将断开一次
+    // 注意！ 这里设置充电功能开，必须要接电池，否则系统电源总线将断开一次
+    // 注意！ 这里设置充电功能开，必须要接电池，否则系统电源总线将断开一次
     ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                    ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+                                    ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
     // ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_WATCHDOG_MODE,
     //                                 ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON);                 // 看门狗（当启动ETA4662的看门狗时，看门狗的定时器到达指定值后将断开电源重新连接，与ETA4662通信的MCU将重启）
     // ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_WATCHDOG_TIMER, 80); // 看门狗定时器值
@@ -85,11 +225,11 @@ void setup()
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_MINIMUM_INPUT_VOLTAGE_LIMIT, 4760);
     // 充电目标电压电压设置为4215mV
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_CHARGING_TARGET_VOLTAGE_LIMIT, 4215);
-    // 系统电压设置为4950mV（输出电压）
-    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_SYSTEM_VOLTAGE_LIMIT, 4950);
-    // 输入电流限制设置为470mA
-    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_INPUT_CURRENT_LIMIT, 470);
-    // 快速充电电流限制设置为136mA
+    // 系统电压设置为4200mV（输出电压，该值不能设置过高）
+    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_SYSTEM_VOLTAGE_LIMIT, 4200);
+    // 输入电流限制设置为500mA
+    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_INPUT_CURRENT_LIMIT, 500);
+    // 快速充电电流限制设置为456mA
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_FAST_CHARGING_CURRENT_LIMIT, 456);
     // 终端充电和预充电电流限制设置为5mA
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT, 5);
@@ -97,16 +237,45 @@ void setup()
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_BAT_TO_SYS_DISCHARGE_CURRENT_LIMIT, 2200);
 
     gfx->begin();
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(BLACK);
 
+    WIFI_STA_Test_Loop();
+
+    delay(2000);
+
+    if (Wifi_Connection_State == true)
+    {
+        // Obtain and set the time from the network time server
+        // After successful acquisition, the chip will use the RTC clock to update the holding time
+        configTime(GMT_OFFSET_SEC, DAY_LIGHT_OFFSET_SEC, NTP_SERVER1, NTP_SERVER2);
+
+        delay(3000);
+    }
+
+    gfx->fillRect(0, 60, 128, 64, WHITE);
     gfx->setCursor(10, 60);
     gfx->setTextSize(1);
     gfx->setTextColor(MAGENTA);
-    gfx->println("Ciallo");
 }
 
 void loop()
 {
+    if (Wifi_Connection_State == true)
+    {
+        WIFI_Time();
+    }
+    else
+    {
+        gfx->fillRect(0, 0, 128, 60, WHITE);
+        gfx->setCursor(0, 10);
+        gfx->print("Wifi Connection Fail");
+    }
+
+    gfx->setCursor(0, 40);
+    gfx->printf("System running time: %d\n\n", (uint32_t)millis() / 1000);
+
+    Serial.printf("System running time: %d\n\n", (uint32_t)millis() / 1000);
+
     Serial.printf("System running time: %d\n\n", (uint32_t)millis() / 1000);
 
     Serial.print("ADC Value:");
@@ -121,8 +290,9 @@ void loop()
     {
         CST816T->IIC_Interrupt_Flag = false;
 
-        gfx->setCursor(50, 50);
-        gfx->fillScreen(WHITE);
+        gfx->fillRect(0, 68, 128, 64, WHITE);
+        gfx->setCursor(90, 90);
+        gfx->setTextColor(MAGENTA);
 
         if (CST816T->IIC_Read_Device_State(CST816T->Arduino_IIC_Touch::Status_Information::TOUCH_GESTURE_ID) == "Swipe Up")
         {

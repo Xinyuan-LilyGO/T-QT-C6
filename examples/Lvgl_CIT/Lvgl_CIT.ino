@@ -1,15 +1,15 @@
 /*
- * @Description(CN): 
+ * @Description(CN):
  *      这是针对于TQT-C6编写的用户测试程序CIT
  *
- * @Description(EN): 
+ * @Description(EN):
  *      This is a user testing program CIT written for TQT-C6.
  *
  * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-09-22 11:59:37
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-20 14:12:30
+ * @LastEditTime: 2024-01-06 13:59:41
  * @License: GPL 3.0
  */
 #include "custom.h"
@@ -170,11 +170,11 @@ void setup()
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_MINIMUM_INPUT_VOLTAGE_LIMIT, 4760);
     // 充电目标电压电压设置为4215mV
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_CHARGING_TARGET_VOLTAGE_LIMIT, 4215);
-    // 系统电压设置为4950mV（输出电压）
-    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_SYSTEM_VOLTAGE_LIMIT, 4950);
-    // 输入电流限制设置为470mA
-    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_INPUT_CURRENT_LIMIT, 470);
-    // 快速充电电流限制设置为136mA
+    // 系统电压设置为4200mV（输出电压，该值不能设置过高）
+    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_SYSTEM_VOLTAGE_LIMIT, 4200);
+    // 输入电流限制设置为500mA
+    ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_INPUT_CURRENT_LIMIT, 500);
+    // 快速充电电流限制设置为456mA
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_FAST_CHARGING_CURRENT_LIMIT, 456);
     // 终端充电和预充电电流限制设置为5mA
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT, 5);
