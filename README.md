@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2024-02-03 15:50:04
+ * @LastEditTime: 2024-02-03 16:16:22
  * @License: GPL 3.0
 -->
 <h1 align = "center">TQT-C6</h1>
@@ -155,7 +155,7 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 ## PinOverview
 
-| LCD PIN      | ESP32S3 PIN     |
+| Screen PIN      | ESP32C6 PIN     |
 | :------------------: | :------------------:|
 | MOSI                     | IO15                  |
 | SCLK                  | IO18                  |
@@ -164,27 +164,27 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 | CS                    | IO14                  |
 | DC                    | IO19                  |
 
-| Battery Related PIN | ESP32S3 PIN      |
+| Battery Related PIN | ESP32C6 PIN      |
 | :------------------: | :------------------:|
 | Battery_Measurement_Control  | IO8                  |
 | Battery_ADC_Data                  | IO6                    |
 
-| Breathing Light PIN          | ESP32S3 PIN      |
+| Breathing Light PIN          | ESP32C6 PIN      |
 | :------------------: | :------------------:|
 | Breathing_Light                  | IO9                  |
 
-| Touch Chip PIN          | ESP32S3 PIN      |
+| Touch Chip PIN          | ESP32C6 PIN      |
 | :------------------: | :------------------:|
 | RST                  | IO23                  |
 | INT                  | IO7                    |
 | SDA                  | IO21                  |
 | SCL                  | IO22                  |
 
-| Sleep Wake UP PIN          | ESP32S3 PIN      |
+| Sleep Wake UP PIN          | ESP32C6 PIN      |
 | :------------------: | :------------------:|
 | SLEEP_WAKE_UP_INT      | IO7                  |
 
-| Power Management Chip PIN          | ESP32S3 PIN      |
+| Power Management Chip PIN          | ESP32C6 PIN      |
 | :------------------: | :------------------:|
 | SDA      | IO21                  |
 | SCL      | IO22                  |
