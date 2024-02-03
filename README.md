@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-22 16:23:58
+ * @LastEditTime: 2024-02-03 15:50:04
  * @License: GPL 3.0
 -->
 <h1 align = "center">TQT-C6</h1>
@@ -60,34 +60,44 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 ## Module
 
-### 1. ESP32-C6-MINI-1U
+### 1. MCU
 
 * Module: ESP32-C6-MINI-1U
+* Chip: ESP32-C6-FH4
 * PSRAM: 4M 
 * FLASH: -
-* Other notes: For more information, please visit [Espressif ESP32-C6-MINI-1U datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-c6-mini-1_mini-1u_datasheet_en.pdf)
+* Other: For more information, please visit [Espressif ESP32-C6-MINI-1U datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-c6-mini-1_mini-1u_datasheet_en.pdf)
 
-### 2. 0.85 Inch 128x128 pixel LCD display screen
+### 2. Screen
 
-* Drive: GC9107
-* Compatibility Library: Arduino_GFX、Lvgl
-* Bus communication protocol: Standard SPI
+* Screen Model: N085-1212TBWIG06-C08
+* Size: 0.85-inch
+* Resolution Ratio: 128x128px
+* Screen Type: TFT
+* Driver Chip: GC9107
+* Bus Communication Protocol: Standard SPI
 
 ### 3. Touch chip
 
 * Chip: CST816T
-* Bus communication protocol: IIC
-* Other notes: Supports up sliding, down sliding, left sliding, right sliding, double clicking, clicking, and long pressing gestures for triggering, as well as a combination of multiple interrupt triggering methods. By default, it automatically enters sleep power-saving mode after a few seconds without touch
+* Bus Communication Protocol: IIC
+* Other: Supports up sliding, down sliding, left sliding, right sliding, double clicking, clicking, and long pressing gestures for triggering, as well as a combination of multiple interrupt triggering methods. By default, it automatically enters sleep power-saving mode after a few seconds without touch
 
 ### 4. Power Management Chip
 
 * Chip: ETA4662
-* Bus communication protocol:IIC
-* Other notes: A chip with power path management that automatically recognizes battery power and USB power, automatically switches to USB power when there is no battery inserted, and automatically switches to battery power when there is no USB power
+* Bus Communication Protocol:IIC
+* Other: A chip with power path management that automatically recognizes battery power and USB power, automatically switches to USB power when there is no battery inserted, and automatically switches to battery power when there is no USB power
 
 ## QuickStart
 
 #### Attention: Currently, ESP32C6 can only be programmed using the Arduino IDE
+
+### Examples Support
+
+<p align="center" width="100%">
+    <img src="image/TQT-C6_Example_Support.png" alt="example">
+</p>
 
 ### Examples Support
 
@@ -119,6 +129,7 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 | Setting                               | Value                                 |
 | :-------------------------------: | :-------------------------------: |
+| Board                                | ESP32C6 Dev Module            |
 | Upload Speed                     | 921600                               |
 | CPU Frequency                   | 160MHz                              |
 | Flash Mode                         | QIO                                   |

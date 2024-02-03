@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-22 16:23:36
+ * @LastEditTime: 2024-02-03 15:53:03
  * @License: GPL 3.0
 -->
 
@@ -61,18 +61,22 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 
 ## 模块
 
-### 1. ESP32-C6-MINI-1U
+### 1. MCU
 
 * 模块：ESP32-C6-MINI-1U
+* 芯片：ESP32-C6-FH4
 * PSRAM：4M 
 * FLASH：-
 * 其他说明：更多资料请访问[乐鑫官方ESP32-C6-MINI-1U数据手册](https://www.espressif.com/sites/default/files/documentation/esp32-c6-mini-1_mini-1u_datasheet_en.pdf)
 
-### 2. 0.85英寸128x128像素LCD显示屏幕
+### 2. 屏幕
 
-* 驱动：GC9107
-* 兼容库：Arduino_GFX、Lvgl
-* 总线通信协议：标准SPI
+* 屏幕型号：N085-1212TBWIG06-C08
+* 尺寸：0.85英寸
+* 分辨率：128x128px
+* 屏幕类型：TFT
+* 驱动芯片：GC9107
+* 使用总线通信协议：标准SPI
 
 ### 3. 触摸芯片
 
@@ -91,6 +95,12 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 #### 注意事项：目前ESP32C6只能使用Arduino IDE进行编程
 
 ### 示例支持
+
+<p align="center" width="100%">
+    <img src="image/TQT-C6_Example_Support.png" alt="example">
+</p>
+
+### 例程支持
 
 <p align="center" width="100%">
     <img src="image/TQT-C6_Example_Support.png" alt="example">
@@ -120,6 +130,7 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 
 | Setting                               | Value                                 |
 | :-------------------------------: | :-------------------------------: |
+| Board                                | ESP32C6 Dev Module            |
 | Upload Speed                     | 921600                               |
 | CPU Frequency                   | 160MHz                              |
 | Flash Mode                         | QIO                                   |
