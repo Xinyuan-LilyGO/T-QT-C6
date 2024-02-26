@@ -100,12 +100,6 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
     <img src="image/TQT-C6_Example_Support.png" alt="example">
 </p>
 
-### 例程支持
-
-<p align="center" width="100%">
-    <img src="image/TQT-C6_Example_Support.png" alt="example">
-</p>
-
 ### PlatformIO
 1. 安装[VisualStudioCode](https://code.visualstudio.com/Download)，根据你的系统类型选择安装。
 
