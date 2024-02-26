@@ -99,12 +99,6 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
     <img src="image/TQT-C6_Example_Support.png" alt="example">
 </p>
 
-### Examples Support
-
-<p align="center" width="100%">
-    <img src="image/TQT-C6_Example_Support.png" alt="example">
-</p>
-
 ### PlatformIO
 1. Install[VisualStudioCode](https://code.visualstudio.com/Download),Choose installation based on your system type.
 
