@@ -64,8 +64,8 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 * Module: ESP32-C6-MINI-1U
 * Chip: ESP32-C6-FH4
-* PSRAM: 4M 
-* FLASH: -
+* FLASH: 4M 
+* PSRAM: -
 * Other: For more information, please visit [Espressif ESP32-C6-MINI-1U datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-c6-mini-1_mini-1u_datasheet_en.pdf)
 
 ### 2. Screen
