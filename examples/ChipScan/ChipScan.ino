@@ -1,13 +1,22 @@
 /*
  * @Description: ChipScan.ino
- * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-09-12 17:09:04
- * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-20 11:06:40
+ * @LastEditTime: 2024-07-11 14:20:13
  * @License: GPL 3.0
  */
 #include <Arduino.h>
+#include "Arduino_DriveBus_Library.h"
+#include "pin_config.h"
+
+std::shared_ptr<Arduino_IIC_DriveBus> IIC_Bus =
+    std::make_shared<Arduino_HWIIC>(IIC_SDA, IIC_SCL, &Wire);
+
+std::unique_ptr<Arduino_IIC> ETA4662(new Arduino_ETA4662(IIC_Bus, ETA4662_DEVICE_ADDRESS,
+                                                         DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
+
+std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
+                                                           DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
 
 void Chip_Scan(void)
 {
@@ -78,6 +87,19 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Ciallo");
+
+    if (ETA4662->begin() == true)
+    {
+        Serial.println("ETA4662 initialization successfully");
+    }
+    else if (SGM41562->begin() == true)
+    {
+        Serial.println("SGM41562 initialization successfully");
+    }
+    else
+    {
+        Serial.println("Power chip initialization failed");
+    }
 }
 
 void loop()

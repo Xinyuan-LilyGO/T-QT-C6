@@ -3,12 +3,12 @@
  * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
- * @LastEditors: LILYGO_L
- * @LastEditTime: 2024-02-03 16:17:02
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-07-12 16:09:01
  * @License: GPL 3.0
 -->
 
-<h1 align = "center">TQT-C6</h1>
+<h1 align = "center">T-QT-C6</h1>
 
 <p> 
   <!-- <a href="https://code.visualstudio.com/"> <img src="badges/VisualStudioCode_badge.png" height="25px" alt="VisualStudioCode_badge" /> </a>
@@ -19,15 +19,17 @@
 ## **[English](./README.md) | 中文**
 
 ## 版本迭代:
-| Version                               | Update date                       |
-| :-------------------------------: | :-------------------------------: |
-| TQT-C6_V1.0            | 2023-12-20                         |
+| Version       | Update date   |Update description|
+| :----------------: | :--------------: |:--------------: |
+| T-QT-C6_V1.0       | 2023-12-20      |初始版本      |
+| T-QT-C6_V1.1     | 2024-03-27         |新增对电池背板的支持      |
+| T-QT-C6_V1.2      | 2024-06-13        |修改电源管理芯片为SGM41562|
 
 ## 购买链接
 
 | Product                     | SOC           |  FLASH  |  PSRAM   | Link                   |
 | :------------------------: | :-----------: |:-------: | :---------: | :------------------: |
-| TQT-C6_V1.0   | ESP32C6 |   4M   | -|  [暂未售卖]()  |
+| T-QT-C6_V1.0-V1.2   | ESP32C6 |   4M   | -|  [暂未售卖]()  |
 
 ## 目录
 - [描述](#描述)
@@ -35,6 +37,7 @@
 - [模块](#模块)
 - [快速开始](#快速开始)
 - [引脚总览](#引脚总览)
+- [相关测试](#相关测试)
 - [常见问题](#常见问题)
 - [项目](#项目)
 - [资料](#资料)
@@ -42,18 +45,20 @@
 
 ## 描述
 
-TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的迷你开发板，拥有一块128x128px像素的TFT全彩触摸屏幕，有独立的充电提示灯，有独立电池，与电源路径管理芯片进行通信可以修改电源总线状态和限制值，主芯片进入light_sleep模式，测量电池处的静态电流只有500uA左右，在deep_sleep模式下还可以达到100uA的极低功耗
+T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的迷你开发板，拥有一块128x128px像素的TFT全彩触摸屏幕，有独立的充电提示灯，有独立电池，与电源路径管理芯片进行通信可以修改电源总线状态和限制值，主芯片进入light_sleep模式，测量电池处的静态电流只有500uA左右，在deep_sleep模式下还可以达到100uA的极低功耗
+
+新更新的T-QT-C6_V1.1-V1.2增加了电池底板供电和惯性传感器，添加的惯性传感器支持步数计数，姿态检测等功能
 
 ## 预览
 
 ### PCB板
 
-<details><summary><b>TQT-C6</b></summary>
+<details><summary><b>T-QT-C6</b></summary>
 
-### TQT-C6 正面
+### T-QT-C6 正面
 
 
-### TQT-C6 反面
+### T-QT-C6 反面
 
 </details>
 
@@ -86,19 +91,50 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 
 ### 4. 电源管理芯片
 
-* 芯片：ETA4662
-* 总线通信协议：IIC
-* 其他说明：具有电源路径管理的芯片，自动识别电池电源和USB电源，在无电池插入时候自动切换为USB供电，在无USB供电时候自动切换为电池供电
+> #### T-QT-C6_V1.0-V1.1
+> * 芯片：ETA4662
+> * 总线通信协议：IIC
+> * 其他说明：具有电源路径管理的芯片，自动识别电池电源和USB电源，在无电池插入时候自动切换为USB供电，在无USB供电时候自动切换为电池供电
+
+> #### T-QT-C6_V1.2
+> * 芯片：SGM41562
+> * 总线通信协议：IIC
+> * 其他说明：具有电源路径管理的芯片，自动识别电池电源和USB电源，在无电池插入时候自动切换为USB供电，在无USB供电时候自动切换为电池供电
+
+### 5. 电池背板惯性传感器
+
+> #### T-QT-C6_V1.1-V1.2
+> * 芯片：LSM6DSLTR
+> * 总线通信协议：IIC
+> * 其他说明：6轴传感器，支持步数计数，姿态检测等
 
 ## 快速开始
 
-#### 注意事项：目前ESP32C6只能使用Arduino IDE进行编程
+### 注意事项：目前ESP32C6只能使用Arduino IDE进行编程
 
 ### 示例支持
 
-<p align="center" width="100%">
-    <img src="image/TQT-C6_Example_Support.png" alt="example">
-</p>
+| Example | Support IDE And Version| Description | Picture |
+| ------  | ------  | ------ | ------ | 
+| [Battery_Voltage](./examples/Battery_Voltage) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Breathing_Light](./examples/BREATHING_LIGHT) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [ChipScan](./examples/ChipScan) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [CST816T](./examples/CST816T) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Deep_Sleep](./examples/Deep_Sleep) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Light_Sleep](./examples/Light_Sleep) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [ETA4662](./examples/ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [GFX](./examples/GFX) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [IMU](./examples/IMU) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [IMU_KalmanFilter](./examples/IMU_KalmanFilter) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [IMU_Level](./examples/IMU_Level) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [SGM41562](./examples/SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Lvgl_CIT_ETA4662](./examples/Lvgl_CIT_ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | 出厂初始测试文件 |  |
+| [Lvgl_CIT_SGM41562](./examples/Lvgl_CIT_SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | 出厂初始测试文件 |  |
+
+| Firmware | Description | Picture |
+| ------  | ------  | ------ |
+| [Lvgl_CIT_ETA4662_V1.0.0](./firmware/[TQT-C6_V1.0-V1.1][Lvgl_CIT_ETA4662]_firmware_V1.0.0.bin) | 出厂初始测试文件 |  |
+| [Lvgl_CIT_SGM41562_V1.0.0](./firmware/[TQT-C6_V1.2][Lvgl_CIT_SGM41562]_firmware_V1.0.0.bin) | 出厂初始测试文件 |  |
 
 ### PlatformIO
 1. 安装[VisualStudioCode](https://code.visualstudio.com/Download)，根据你的系统类型选择安装。
@@ -161,12 +197,12 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 
 | 电池相关引脚 | ESP32C6引脚      |
 | :------------------: | :------------------:|
-| Battery_Measurement_Control  | IO8                  |
-| Battery_ADC_Data                  | IO6                    |
+| BATTERY_MEASUREMENT_CONTROL  | IO8                  |
+| BATTERY_ADC_DATA                  | IO6                    |
 
 | 呼吸灯引脚          | ESP32C6引脚      |
 | :------------------: | :------------------:|
-| Breathing_Light                  | IO9                  |
+| BREATHING_LIGHT                  | IO9                  |
 
 | 触摸芯片引脚          | ESP32C6引脚      |
 | :------------------: | :------------------:|
@@ -179,10 +215,30 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 | :------------------: | :------------------:|
 | SLEEP_WAKE_UP_INT      | IO7                  |
 
-| 电源管理芯片引脚          | ESP32C6引脚      |
+| 电源管理芯片引脚    | ESP32C6引脚      |
 | :------------------: | :------------------:|
 | SDA      | IO21                  |
 | SCL      | IO22                  |
+
+> #### T-QT-C6_V1.1-V1.2
+> | 惯性传感器引脚   | ESP32C6引脚      |
+> | :------------------: | :------------------:|
+> | LSM6DSL_IIC_ADDRESS_MODE      | IO3      |
+> | INT1      | IO0                  |
+> | INT2      | IO1                  |
+
+> #### T-QT-C6_V1.2
+> | 电源管理芯片引脚    | ESP32C6引脚      |
+> | :------------------: | :------------------:|
+> | INT      | IO4                  |
+
+## 相关测试
+
+### 功耗
+| Firmware | Program| Description | Picture |
+| ------  | ------  | ------ | ------ | 
+| [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` | 功耗: 553uA | <p align="center" width="10%"> <img src="image/13.jpg" alt="example" width="50%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | 功耗: 144uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
 
 ## 常见问题
 
@@ -205,7 +261,9 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 * A. 请按住“BOOT”按键重新下载程序。
 
 ## 项目
-* [SCH_TQT-C6_V1.0](./project/SCH_TQT-C6_V1.0.pdf)
+* [T-QT-C6_V1.0](./project/T-QT-C6_V1.0)
+* [T-QT-C6_V1.1](./project/T-QT-C6_V1.1)
+* [T-QT-C6_V1.2](./project/T-QT-C6_V1.2)
 
 ## 资料
 * [Espressif](https://www.espressif.com/en/support/documents/technical-documents)
@@ -213,8 +271,11 @@ TQT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的�
 * [AN-CST816T-v1](./information/AN-CST816T-v1.pdf)
 * [WS2812B-2020](./information/WS2812B-2020.pdf)
 * [WS2812C-2020](./information/WS2812C-2020.pdf)
+* [SGMICRO-SGM41562XGTR](./information/SGMICRO-SGM41562XGTR.pdf)
+* [lsm6dsl](./information/lsm6dsl.pdf)
+* [lsm6dsl-stmicroelectronics_en](./information/lsm6dsl-stmicroelectronics_en.pdf)
 
 ## 依赖库
-* [Arduino_DriveBus-1.0.0](https://github.com/Xk-w/Arduino_DriveBus)
+* [Arduino_DriveBus-1.1.10](https://github.com/Xk-w/Arduino_DriveBus)
 * [Arduino_GFX-1.3.7](https://github.com/moononournation/Arduino_GFX)
 * [lvgl-8.3.5](https://github.com/lvgl/lvgl)

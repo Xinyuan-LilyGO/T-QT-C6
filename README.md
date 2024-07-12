@@ -4,10 +4,10 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: LILYGO_L
- * @LastEditTime: 2024-02-03 16:16:22
+ * @LastEditTime: 2024-07-12 16:15:08
  * @License: GPL 3.0
 -->
-<h1 align = "center">TQT-C6</h1>
+<h1 align = "center">T-QT-C6</h1>
 
 <p> 
   <!-- <a href="https://code.visualstudio.com/"> <img src="badges/VisualStudioCode_badge.png" height="25px" alt="VisualStudioCode_badge" /> </a>
@@ -20,13 +20,19 @@
 ## Version iteration:
 | Version                              | Update date                       |
 | :-------------------------------: | :-------------------------------: |
-| TQT-C6_V1.0            | 2023-12-20                         |
+| T-QT-C6_V1.0            | 2023-12-20                         |
+
+| Version       | Update date   |Update description|
+| :----------------: | :--------------: |:--------------: |
+| T-QT-C6_V1.0       | 2023-12-20      |Original version      |
+| T-QT-C6_V1.1     | 2024-03-27         |New support for battery backboards      |
+| T-QT-C6_V1.2      | 2024-06-13        |Modify the power management chip to SGM41562|
 
 ## PurchaseLink
 
 | Product                     | SOC           |  FLASH  |  PSRAM   | Link                   |
 | :------------------------: | :-----------: |:-------: | :---------: | :------------------: |
-| TQT-C6_V1.0   | ESP32C6 |   4M   | -|  [Not yet sold]()  |
+| T-QT-C6_V1.0-V1.2   | ESP32C6 |   4M   | -|  [Not yet sold]()  |
 
 ## Directory
 - [Describe](#describe)
@@ -34,6 +40,7 @@
 - [Module](#module)
 - [QuickStart](#quickstart)
 - [PinOverview](#pinoverview)
+- [RelatedTests](#RelatedTests)
 - [FAQ](#faq)
 - [Project](#project)
 - [Information](#information)
@@ -41,17 +48,19 @@
 
 ## Describe
 
-TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slightly larger than two thumbs. It features a 128x128px TFT full-color touch screen, a separate charging indicator light, and an independent battery. It can communicate with the power path management chip to modify the power bus status and limit values. When the main chip enters the light_sleep mode, the static current at the battery location is only about 500uA. In deep_sleep mode, it can achieve an extremely low power consumption of 100uA.
+T-QT-C6 is a mini development board based on the ESP32C6 chip, which is only slightly larger than two thumbs. It features a 128x128px TFT full-color touch screen, a separate charging indicator light, and an independent battery. It can communicate with the power path management chip to modify the power bus status and limit values. When the main chip enters the light_sleep mode, the static current at the battery location is only about 500uA. In deep_sleep mode, it can achieve an extremely low power consumption of 100uA.
+
+The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply and inertial sensors. The added inertial sensors support step counting, attitude detection, and other functions.
 
 ## Preview
 
 ### PCB board
 
-<details><summary><b>TQT-C6</b></summary>
+<details><summary><b>T-QT-C6</b></summary>
 
-##### TQT-C6 Front
+##### T-QT-C6 Front
 
-##### TQT-C6 Back
+##### T-QT-C6 Back
 
 </details>
 
@@ -64,8 +73,8 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 * Module: ESP32-C6-MINI-1U
 * Chip: ESP32-C6-FH4
-* FLASH: 4M 
-* PSRAM: -
+* PSRAM: 4M 
+* FLASH: -
 * Other: For more information, please visit [Espressif ESP32-C6-MINI-1U datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-c6-mini-1_mini-1u_datasheet_en.pdf)
 
 ### 2. Screen
@@ -85,19 +94,50 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 ### 4. Power Management Chip
 
-* Chip: ETA4662
-* Bus Communication Protocol:IIC
-* Other: A chip with power path management that automatically recognizes battery power and USB power, automatically switches to USB power when there is no battery inserted, and automatically switches to battery power when there is no USB power
+> #### T-QT-C6_V1.0-V1.1
+> * Chip: ETA4662
+> * Bus Communication Protocol: IIC
+> * Other: A chip with power path management that automatically recognizes battery power and USB power, automatically switches to USB power when there is no battery inserted, and automatically switches to battery power when there is no USB power
+
+> #### T-QT-C6_V1.2
+> * Chip: SGM41562
+> * Bus Communication Protocol: IIC
+> * Other: A chip with power path management that automatically recognizes battery power and USB power, automatically switches to USB power when there is no battery inserted, and automatically switches to battery power when there is no USB power
+
+### 5. Battery backplate inertial sensor
+
+> #### T-QT-C6_V1.1-V1.2
+> * Chip:LSM6DSLTR
+> * Bus Communication Protocol: IIC
+> * Other: 6-axis sensor, supporting step counting and attitude detection.
 
 ## QuickStart
 
-#### Attention: Currently, ESP32C6 can only be programmed using the Arduino IDE
+### Attention: Currently, ESP32C6 can only be programmed using the Arduino IDE
 
 ### Examples Support
 
-<p align="center" width="100%">
-    <img src="image/TQT-C6_Example_Support.png" alt="example">
-</p>
+| Example | Support IDE And Version| Description | Picture |
+| ------  | ------  | ------ | ------ | 
+| [Battery_Voltage](./examples/Battery_Voltage) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Breathing_Light](./examples/Breathing_Light) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [ChipScan](./examples/ChipScan) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [CST816T](./examples/CST816T) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Deep_Sleep](./examples/Deep_Sleep) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Light_Sleep](./examples/Light_Sleep) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [ETA4662](./examples/ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [GFX](./examples/GFX) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [IMU](./examples/IMU) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [IMU_KalmanFilter](./examples/IMU_KalmanFilter) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [IMU_Level](./examples/IMU_Level) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [SGM41562](./examples/SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+| [Lvgl_CIT_ETA4662](./examples/Lvgl_CIT_ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | Factory original test documents |  |
+| [Lvgl_CIT_SGM41562](./examples/Lvgl_CIT_SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | Factory original test documents |  |
+
+| Firmware | Description | Picture |
+| ------  | ------  | ------ |
+| [Lvgl_CIT_ETA4662_V1.0.0](./firmware/[TQT-C6_V1.0-V1.1][Lvgl_CIT_ETA4662]_firmware_V1.0.0.bin) | Factory original test documents |  |
+| [Lvgl_CIT_SGM41562_V1.0.0](./firmware/[TQT-C6_V1.2][Lvgl_CIT_SGM41562]_firmware_V1.0.0.bin) | Factory original test documents |  |
 
 ### PlatformIO
 1. Install[VisualStudioCode](https://code.visualstudio.com/Download),Choose installation based on your system type.
@@ -149,7 +189,7 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 
 ## PinOverview
 
-| Screen PIN      | ESP32C6 PIN     |
+| Screen pins      | ESP32C6 pins     |
 | :------------------: | :------------------:|
 | MOSI                     | IO15                  |
 | SCLK                  | IO18                  |
@@ -158,30 +198,50 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 | CS                    | IO14                  |
 | DC                    | IO19                  |
 
-| Battery Related PIN | ESP32C6 PIN      |
+| Battery related pins | ESP32C6 pins      |
 | :------------------: | :------------------:|
-| Battery_Measurement_Control  | IO8                  |
-| Battery_ADC_Data                  | IO6                    |
+| BATTERY_MEASUREMENT_CONTROL  | IO8                  |
+| BATTERY_ADC_DATA                  | IO6                    |
 
-| Breathing Light PIN          | ESP32C6 PIN      |
+| Breathing light pins          | ESP32C6 pins      |
 | :------------------: | :------------------:|
-| Breathing_Light                  | IO9                  |
+| BREATHING_LIGHT                  | IO9                  |
 
-| Touch Chip PIN          | ESP32C6 PIN      |
+| Touch chip pins          | ESP32C6 pins      |
 | :------------------: | :------------------:|
 | RST                  | IO23                  |
 | INT                  | IO7                    |
 | SDA                  | IO21                  |
 | SCL                  | IO22                  |
 
-| Sleep Wake UP PIN          | ESP32C6 PIN      |
+| Sleep wake up pins          | ESP32C6 pins      |
 | :------------------: | :------------------:|
 | SLEEP_WAKE_UP_INT      | IO7                  |
 
-| Power Management Chip PIN          | ESP32C6 PIN      |
+| Power management chip pins          | ESP32C6 pins      |
 | :------------------: | :------------------:|
 | SDA      | IO21                  |
 | SCL      | IO22                  |
+
+> #### T-QT-C6_V1.1-V1.2
+> | Inertial sensor pins   | ESP32C6 pins      |
+> | :------------------: | :------------------:|
+> | LSM6DSL_IIC_ADDRESS_MODE      | IO3      |
+> | INT1      | IO0                  |
+> | INT2      | IO1                  |
+
+> #### T-QT-C6_V1.2
+> | Power management chip pins    | ESP32C6 pins      |
+> | :------------------: | :------------------:|
+> | INT      | IO4                  |
+
+## RelatedTests
+
+### Power Dissipation
+| Firmware | Program| Description | Picture |
+| ------  | ------  | ------ | ------ | 
+| [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` |Power dissipation: 553uA | <p align="center" width="10%"> <img src="image/13.jpg" alt="example" width="50%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | Power dissipation: 144uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
 
 ## FAQ
 
@@ -204,7 +264,9 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 * A. Please hold down the "BOOT-0" button and try downloading the program again.
 
 ## Project
-* [SCH_TQT-C6_V1.0](./project/SCH_TQT-C6_V1.0.pdf)
+* [T-QT-C6_V1.0](./project/T-QT-C6_V1.0)
+* [T-QT-C6_V1.1](./project/T-QT-C6_V1.1)
+* [T-QT-C6_V1.2](./project/T-QT-C6_V1.2)
 
 ## Information
 * [Espressif](https://www.espressif.com/en/support/documents/technical-documents)
@@ -212,8 +274,11 @@ TQT-C6 is a mini development board based on the ESP32C6 chip, which is only slig
 * [AN-CST816T-v1](./information/AN-CST816T-v1.pdf)
 * [WS2812B-2020](./information/WS2812B-2020.pdf)
 * [WS2812C-2020](./information/WS2812C-2020.pdf)
+* [SGMICRO-SGM41562XGTR](./information/SGMICRO-SGM41562XGTR.pdf)
+* [lsm6dsl](./information/lsm6dsl.pdf)
+* [lsm6dsl-stmicroelectronics_en](./information/lsm6dsl-stmicroelectronics_en.pdf)
 
 ## DependentLibraries
-* [Arduino_DriveBus-1.0.0](https://github.com/Xk-w/Arduino_DriveBus)
+* [Arduino_DriveBus-1.1.10](https://github.com/Xk-w/Arduino_DriveBus)
 * [Arduino_GFX-1.3.7](https://github.com/moononournation/Arduino_GFX)
 * [lvgl-8.3.5](https://github.com/lvgl/lvgl)

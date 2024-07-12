@@ -1,25 +1,12 @@
 /*
- * @Description(CN): ETA4662示例程序
- *  注意事项：
- *      1. 当启动ETA4662的看门狗时，看门狗的定时器到达指定值后将断开电源重新连接，
- *  与ETA4662通信的MCU将失去电源重启
- *      2. 当ETA4662开启充电，但是又未接入电池，此时ETA4662会将输出电压断开一次，
- *  与ETA4662通信的MCU将失去电源重启，所以如果没有接入电池时请不要开启ETA4662的充电
- *
- * @Description(EN): ETA4662 Example Program
- *  Note:
- *      1. When enabling the ETA4662 watchdog, the MCU communicating with ETA4662 will
- *  lose power and restart when the watchdog timer reaches the specified value, as the power
- *  supply will be disconnected and reconnected.
- *      2. When ETA4662 is enabled for charging but no battery is connected, it will disconnect
- *  the output voltage once, causing the MCU to lose power and restart. Therefore, do not
- *  enable ETA4662 charging without connecting a battery.
- *
- * @version: V1.0.0
+ * @Description(EN): 
+            ETA4662 Example Program
+        When enabling the ETA4662 watchdog, the MCU communicating with ETA4662 will
+    lose power and restart when the watchdog timer reaches the specified value, as the power
+    supply will be disconnected and reconnected.
  * @Author: LILYGO_L
  * @Date: 2023-11-27 10:08:51
- * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-20 11:55:28
+ * @LastEditTime: 2024-07-11 13:58:53
  * @License: GPL 3.0
  */
 #include "Arduino_DriveBus_Library.h"
@@ -37,19 +24,19 @@ void setup()
     Serial.println("Ciallo");
 
     // 呼吸灯
-    pinMode(Breathing_Light, OUTPUT);
-    ledcAttach(Breathing_Light, 20000, 8);
-    ledcWrite(Breathing_Light, 255); // 关闭呼吸灯
+    pinMode(BREATHING_LIGHT, OUTPUT);
+    ledcAttach(BREATHING_LIGHT, 2000, 8);
+    ledcWrite(BREATHING_LIGHT, 255); // 关闭呼吸灯
 
     // 测量电池
-    pinMode(Battery_ADC_Data, INPUT_PULLDOWN);
-    pinMode(Battery_Measurement_Control, OUTPUT);
-    digitalWrite(Battery_Measurement_Control, LOW); // 开启电池电压测量
+    pinMode(BATTERY_ADC_DATA, INPUT_PULLDOWN);
+    pinMode(BATTERY_MEASUREMENT_CONTROL, OUTPUT);
+    digitalWrite(BATTERY_MEASUREMENT_CONTROL, LOW); // 开启电池电压测量
     analogReadResolution(12);
 
     // 屏幕背光
     pinMode(LCD_BL, OUTPUT);
-    ledcAttach(LCD_BL, 20000, 8);
+    ledcAttach(LCD_BL, 2000, 8);
     ledcWrite(LCD_BL, 255); // 关闭屏幕
 
     while (ETA4662->begin() == false)
@@ -71,7 +58,7 @@ void setup()
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_MINIMUM_INPUT_VOLTAGE_LIMIT, 4760);
     // 充电目标电压电压设置为4215mV
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_CHARGING_TARGET_VOLTAGE_LIMIT, 4215);
-    // 系统电压设置为4200mV（输出电压，该值不能设置过高）
+    // 系统电压设置为4200mV
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_SYSTEM_VOLTAGE_LIMIT, 4200);
     // 输入电流限制设置为500mA
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_INPUT_CURRENT_LIMIT, 500);
@@ -114,11 +101,11 @@ void loop()
                   (ETA4662->IIC_Read_Device_State(ETA4662->Arduino_IIC_Power::Status_Information::POWER_NTC_FAULT_STATUS)).c_str());
 
     Serial.printf("\nThermal Regulation Threshold: %d ^C \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_THERMAL_REGULATION_THRESHOLD));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_THERMAL_REGULATION_THRESHOLD));
 
     if (Battery_Status == "Normal") // 开启充电的时候可检测该值从而推断电池是否接入
     {
-        Serial.printf("\nBattery Voltage: %d mV\n", analogReadMilliVolts(Battery_ADC_Data) * 2);
+        Serial.printf("\nBattery Voltage: %d mV\n", analogReadMilliVolts(BATTERY_ADC_DATA) * 2);
     }
     else
     {
@@ -126,30 +113,30 @@ void loop()
     }
 
     Serial.printf("\nInput Minimum Voltage Limit: %d mV \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_MINIMUM_INPUT_VOLTAGE_LIMIT));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_MINIMUM_INPUT_VOLTAGE_LIMIT));
     Serial.printf("Charging Target Voltage Limit: %d mV \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_CHARGING_TARGET_VOLTAGE_LIMIT));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_CHARGING_TARGET_VOLTAGE_LIMIT));
     Serial.printf("System Voltage Limit: %d mV \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_SYSTEM_VOLTAGE_LIMIT));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_SYSTEM_VOLTAGE_LIMIT));
     Serial.printf("Input Current Limit: %d mA \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_INPUT_CURRENT_LIMIT));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_INPUT_CURRENT_LIMIT));
     Serial.printf("Fast Charge Current Limit: %d mA \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_FAST_CHARGING_CURRENT_LIMIT));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_FAST_CHARGING_CURRENT_LIMIT));
     Serial.printf("Termination And Precondition Charge Current Limit: %d mA \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT));
     Serial.printf("BAT To SYS Discharge Current Limit: %d mA \n",
-                  ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_BAT_TO_SYS_DISCHARGE_CURRENT_LIMIT));
+                  (int32_t)ETA4662->IIC_Read_Device_Value(ETA4662->Arduino_IIC_Power::Value_Information::POWER_BAT_TO_SYS_DISCHARGE_CURRENT_LIMIT));
 
     Serial.printf("--------------------ETA4662--------------------\n");
 
     for (int i = 255; i > 0; i--)
     {
-        ledcWrite(Breathing_Light, i);
+        ledcWrite(BREATHING_LIGHT, i);
         delay(5);
     }
-    for (int i = 0; i < 255; i++)
+    for (int i = 0; i <= 255; i++)
     {
-        ledcWrite(Breathing_Light, i);
+        ledcWrite(BREATHING_LIGHT, i);
         delay(2);
     }
 

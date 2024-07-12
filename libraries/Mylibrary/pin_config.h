@@ -3,8 +3,8 @@
  * @version: None
  * @Author: None
  * @Date: 2023-06-05 13:01:59
- * @LastEditors: LILYGO_L
- * @LastEditTime: 2023-12-18 10:10:12
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-07-11 11:58:52
  */
 #pragma once
 
@@ -20,20 +20,22 @@
 #define LCD_BL 2
 
 // Battery
-#define Battery_Measurement_Control 8
-#define Battery_ADC_Data 6
+#define BATTERY_MEASUREMENT_CONTROL 8
+#define BATTERY_ADC_DATA 6
 
 // Breathing Light
-#define Breathing_Light 9
+#define BREATHING_LIGHT 9
 
 // IIC
 #define IIC_SDA 21
 #define IIC_SCL 22
 
 // CST816
-#define CST816_Address 0x15
 #define TP_RST 23
 #define TP_INT 7
 
 // SLEEP
 #define SLEEP_WAKE_UP_INT 7
+
+// LSM6DSL
+#define LSM6DSL_IIC_ADDRESS_MODE 3
