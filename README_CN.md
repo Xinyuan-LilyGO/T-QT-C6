@@ -238,7 +238,7 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 | Firmware | Program| Description | Picture |
 | ------  | ------  | ------ | ------ | 
 | [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` | 功耗: 553uA | <p align="center" width="10%"> <img src="image/13.jpg" alt="example" width="50%"> </p> |
-| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | 功耗: 144uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | 功耗: 170uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
 
 ## 常见问题
 

@@ -241,7 +241,7 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 | Firmware | Program| Description | Picture |
 | ------  | ------  | ------ | ------ | 
 | [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` |Power dissipation: 553uA | <p align="center" width="10%"> <img src="image/13.jpg" alt="example" width="50%"> </p> |
-| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | Power dissipation: 144uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | Power dissipation: 170uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
 
 ## FAQ
 
