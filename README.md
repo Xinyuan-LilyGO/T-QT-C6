@@ -3,16 +3,20 @@
  * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
- * @LastEditors: LILYGO_L
- * @LastEditTime: 2024-07-12 16:15:08
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-11-21 15:22:09
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
 
+<p align="center" width="100%">
+    <img src="image/14.jpg" alt="">
+</p>
+
 <p> 
   <!-- <a href="https://code.visualstudio.com/"> <img src="badges/VisualStudioCode_badge.png" height="25px" alt="VisualStudioCode_badge" /> </a>
   <a href="https://platformio.org/"> <img src="badges/PlatformIO_badge.png" height="25px" alt="PlatformIO_badge" /> </a> -->
-  <a href="https://hangzhang.org/"> <img src="badges/Arduino_badge.png" height="25px" alt="Arduino_badge"></a>
+  <a href="https://www.arduino.cc/"> <img src="badges/Arduino_badge.png" height="25px" alt="Arduino_badge"></a>
 </p> 
 
 ## **English | [中文](./README_CN.md)**
@@ -32,7 +36,7 @@
 
 | Product                     | SOC           |  FLASH  |  PSRAM   | Link                   |
 | :------------------------: | :-----------: |:-------: | :---------: | :------------------: |
-| T-QT-C6_V1.0-V1.2   | ESP32C6 |   4M   | -|  [Not yet sold]()  |
+| T-QT-C6_V1.0-V1.2   | ESP32C6 |   4M   | -| [LILYGO Mall](https://lilygo.cc/products/t-qt-c6?_pos=1&_sid=543d51cdd&_ss=r) |
 
 ## Directory
 - [Describe](#describe)
@@ -54,18 +58,23 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 
 ## Preview
 
-### PCB board
+### Actual Product Image
 
-<details><summary><b>T-QT-C6</b></summary>
+<p align="center" width="100%">
+    <img src="image/14.jpg" alt="">
+</p>
 
-##### T-QT-C6 Front
+---
 
-##### T-QT-C6 Back
+<p align="center" width="100%">
+    <img src="image/15.jpg" alt="">
+</p>
 
-</details>
+---
 
-### Rendering
-
+<p align="center" width="100%">
+    <img src="image/16.jpg" alt="">
+</p>
 
 ## Module
 

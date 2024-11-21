@@ -4,16 +4,20 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-07-12 16:09:01
+ * @LastEditTime: 2024-11-21 15:25:40
  * @License: GPL 3.0
 -->
 
 <h1 align = "center">T-QT-C6</h1>
 
+<p align="center" width="100%">
+    <img src="image/14.jpg" alt="">
+</p>
+
 <p> 
   <!-- <a href="https://code.visualstudio.com/"> <img src="badges/VisualStudioCode_badge.png" height="25px" alt="VisualStudioCode_badge" /> </a>
   <a href="https://platformio.org/"> <img src="badges/PlatformIO_badge.png" height="25px" alt="PlatformIO_badge" /> </a> -->
-  <a href="https://hangzhang.org/"> <img src="badges/Arduino_badge.png" height="25px" alt="Arduino_badge"></a>
+  <a href="https://www.arduino.cc/"> <img src="badges/Arduino_badge.png" height="25px" alt="Arduino_badge"></a>
 </p> 
 
 ## **[English](./README.md) | 中文**
@@ -29,7 +33,7 @@
 
 | Product                     | SOC           |  FLASH  |  PSRAM   | Link                   |
 | :------------------------: | :-----------: |:-------: | :---------: | :------------------: |
-| T-QT-C6_V1.0-V1.2   | ESP32C6 |   4M   | -|  [暂未售卖]()  |
+| T-QT-C6_V1.0-V1.2   | ESP32C6 |   4M   | -| [LILYGO Mall](https://lilygo.cc/products/t-qt-c6?_pos=1&_sid=543d51cdd&_ss=r) |
 
 ## 目录
 - [描述](#描述)
@@ -51,18 +55,23 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 
 ## 预览
 
-### PCB板
+### 实物图
 
-<details><summary><b>T-QT-C6</b></summary>
+<p align="center" width="100%">
+    <img src="image/14.jpg" alt="">
+</p>
 
-### T-QT-C6 正面
+---
 
+<p align="center" width="100%">
+    <img src="image/15.jpg" alt="">
+</p>
 
-### T-QT-C6 反面
+---
 
-</details>
-
-### 渲染图
+<p align="center" width="100%">
+    <img src="image/16.jpg" alt="">
+</p>
 
 ## 模块
 
