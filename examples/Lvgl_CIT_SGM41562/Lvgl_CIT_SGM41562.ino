@@ -2,7 +2,7 @@
  * @Description: This is a user testing program CIT written for TQT-C6.
  * @Author: LILYGO_L
  * @Date: 2023-09-22 11:59:37
- * @LastEditTime: 2024-07-04 09:34:30
+ * @LastEditTime: 2024-09-27 14:34:18
  * @License: GPL 3.0
  */
 #include "custom.h"
@@ -183,7 +183,7 @@ void setup()
 
     if (CST816T->begin() == false)
     {
-        Serial.println("CST816T initialization fail");
+        Serial.println("CST816T initialization  fail");
         delay(2000);
     }
     else
@@ -203,6 +203,16 @@ void setup()
     else
     {
         Serial.println("LSM6DSL initialization successfully");
+
+        // 设置陀螺仪传感器为休眠模式
+        LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_SLEEP_MODE,
+                                        LSM6DSL->Arduino_IIC_IMU::Device_State::IMU_DEVICE_ON);
+        // 设置加速度传感器性能模式为下电模式
+        LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_ACCELERATION_POWER_MODE,
+                                        LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_OFF_POWER);
+        // 设置陀螺仪传感器性能模式为下电模式
+        LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_POWER_MODE,
+                                        LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_OFF_POWER);
     }
 
     gfx->begin();

@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-11-21 15:22:09
+ * @LastEditTime: 2024-11-21 15:29:34
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
@@ -145,8 +145,8 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 
 | Firmware | Description | Picture |
 | ------  | ------  | ------ |
-| [Lvgl_CIT_ETA4662_V1.0.0](./firmware/[TQT-C6_V1.0-V1.1][Lvgl_CIT_ETA4662]_firmware_V1.0.0.bin) | Factory original test documents |  |
-| [Lvgl_CIT_SGM41562_V1.0.0](./firmware/[TQT-C6_V1.2][Lvgl_CIT_SGM41562]_firmware_V1.0.0.bin) | Factory original test documents |  |
+| [Lvgl_CIT_ETA4662](./firmware/[TQT-C6_V1.0-V1.1][Lvgl_CIT_ETA4662]_firmware_V1.0.0.bin) | Factory original test documents |  |
+| [Lvgl_CIT_SGM41562](./firmware/[TQT-C6_V1.2][Lvgl_CIT_SGM41562]_firmware_V1.0.1.bin) | Factory original test documents |  |
 
 ### PlatformIO
 1. Install[VisualStudioCode](https://code.visualstudio.com/Download),Choose installation based on your system type.

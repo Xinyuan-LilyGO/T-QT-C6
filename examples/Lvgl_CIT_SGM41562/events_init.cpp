@@ -3,8 +3,8 @@
  * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-12-08 10:45:26
- * @LastEditors: LILYGO_L
- * @LastEditTime: 2024-07-04 09:54:24
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-09-27 14:18:44
  * @License: GPL 3.0
  */
 #include "custom.h"
@@ -266,6 +266,18 @@ static void Test_event_handler(lv_event_t *e)
             case CIT_UI.Window_Current_State::Window_WIFI_STA_Test:
 
                 break;
+            case CIT_UI.Window_Current_State::Window_IMU_Test:
+
+                // 设置陀螺仪传感器为休眠模式
+                LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_SLEEP_MODE,
+                                                LSM6DSL->Arduino_IIC_IMU::Device_State::IMU_DEVICE_ON);
+                // 设置加速度传感器性能模式为下电模式
+                LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_ACCELERATION_POWER_MODE,
+                                                LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_OFF_POWER);
+                // 设置陀螺仪传感器性能模式为下电模式
+                LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_POWER_MODE,
+                                                LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_OFF_POWER);
+                break;
 
             default:
                 break;
@@ -303,6 +315,18 @@ static void Test_event_handler(lv_event_t *e)
                 ledcWrite(BREATHING_LIGHT, 255 - CIT_UI.BREATHING_LIGHT_Brightness);
                 break;
             case CIT_UI.Window_Current_State::Window_WIFI_STA_Test:
+                break;
+            case CIT_UI.Window_Current_State::Window_IMU_Test:
+
+                // 设置陀螺仪传感器为休眠模式
+                LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_SLEEP_MODE,
+                                                LSM6DSL->Arduino_IIC_IMU::Device_State::IMU_DEVICE_ON);
+                // 设置加速度传感器性能模式为下电模式
+                LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_ACCELERATION_POWER_MODE,
+                                                LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_OFF_POWER);
+                // 设置陀螺仪传感器性能模式为下电模式
+                LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_POWER_MODE,
+                                                LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_OFF_POWER);
                 break;
 
             default:

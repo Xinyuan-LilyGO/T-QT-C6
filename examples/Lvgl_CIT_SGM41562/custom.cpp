@@ -3,8 +3,8 @@
  * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-10-05 11:31:11
- * @LastEditors: LILYGO_L
- * @LastEditTime: 2024-07-04 15:51:12
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2024-09-27 14:35:46
  * @License: GPL 3.0
  */
 #include <Arduino.h>
@@ -360,14 +360,17 @@ void Window_WIFI_STA_Test_Initialization(lv_ui *ui)
 
 void Window_IMU_Test_Initialization()
 {
-    // 设置加速度传感器模式为高性能模式
+    // 关闭陀螺仪传感器的休眠模式
+    LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_SLEEP_MODE,
+                                    LSM6DSL->Arduino_IIC_IMU::Device_State::IMU_DEVICE_OFF);
+    // 设置加速度传感器模式为正常模式
     LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_ACCELERATION_POWER_MODE,
                                     LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_NORMAL_POWER);
     // 设置加速度传感器灵敏度为 ±16g
     LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_ACCELERATION_SENSITIVITY,
                                     16);
 
-    // 设置陀螺仪传感器模式为高性能模式
+    // 设置陀螺仪传感器模式为正常模式
     LSM6DSL->IIC_Write_Device_State(LSM6DSL->Arduino_IIC_IMU::Device::IMU_GYROSCOPE_POWER_MODE,
                                     LSM6DSL->Arduino_IIC_IMU::Device_Mode::IMU_DEVICE_NORMAL_POWER);
     // 设置陀螺仪传感器灵敏度为 ±2000dps
@@ -446,7 +449,7 @@ void Window_LCD_Backlight_Test_Loop(void)
                 delay(2);
             }
             delay(3000);
-            for (int i = 255; i > 0; i--)
+            for (int i = 255; i >= 0; i--)
             {
                 ledcWrite(LCD_BL, i);
                 delay(5);
@@ -1006,7 +1009,7 @@ void Window_IMU_Test_Loop(void)
         digitalWrite(BATTERY_MEASUREMENT_CONTROL, HIGH); // 关闭电池电压测量
     }
 
-    if (Battery_Voltage > 2500) // 电池电压大于2.5V就充电否则一律不充电
+    if (Battery_Voltage > 3000) // 电池电压大于3V就充电否则一律不充电
     {
         SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
                                          SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电

@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-11-21 15:25:40
+ * @LastEditTime: 2024-11-21 15:29:14
  * @License: GPL 3.0
 -->
 
@@ -142,8 +142,8 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 
 | Firmware | Description | Picture |
 | ------  | ------  | ------ |
-| [Lvgl_CIT_ETA4662_V1.0.0](./firmware/[TQT-C6_V1.0-V1.1][Lvgl_CIT_ETA4662]_firmware_V1.0.0.bin) | 出厂初始测试文件 |  |
-| [Lvgl_CIT_SGM41562_V1.0.0](./firmware/[TQT-C6_V1.2][Lvgl_CIT_SGM41562]_firmware_V1.0.0.bin) | 出厂初始测试文件 |  |
+| [Lvgl_CIT_ETA4662](./firmware/[TQT-C6_V1.0-V1.1][Lvgl_CIT_ETA4662]_firmware_V1.0.0.bin) | 出厂初始测试文件 |  |
+| [Lvgl_CIT_SGM41562](./firmware/[TQT-C6_V1.2][Lvgl_CIT_SGM41562]_firmware_V1.0.1.bin) | 出厂初始测试文件 |  |
 
 ### PlatformIO
 1. 安装[VisualStudioCode](https://code.visualstudio.com/Download)，根据你的系统类型选择安装。

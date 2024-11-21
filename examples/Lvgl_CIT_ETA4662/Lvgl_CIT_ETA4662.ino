@@ -2,7 +2,7 @@
  * @Description: This is a user testing program CIT written for TQT-C6.
  * @Author: LILYGO_L
  * @Date: 2023-09-22 11:59:37
- * @LastEditTime: 2024-07-11 14:04:51
+ * @LastEditTime: 2024-10-17 10:47:58
  * @License: GPL 3.0
  */
 #include "custom.h"
