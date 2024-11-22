@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-11-21 15:29:34
+ * @LastEditTime: 2024-11-22 17:13:30
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
@@ -249,8 +249,8 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 ### Power Dissipation
 | Firmware | Program| Description | Picture |
 | ------  | ------  | ------ | ------ | 
-| [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` |Power dissipation: 553uA | <p align="center" width="10%"> <img src="image/13.jpg" alt="example" width="50%"> </p> |
-| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | Power dissipation: 170uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` |Power dissipation: 553uA <br /> For more information please refer to [Power Consumption Test Log](./relevant%20test/PowerConsumptionTestLog_[T-QT-C6_V1.2]_20241122.pdf) | <p align="center" width="10%"> <img src="image/13.png" alt="example" width="100%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | Power dissipation: 170uA <br /> For more information please refer to [Power Consumption Test Log](./relevant%20test/PowerConsumptionTestLog_[T-QT-C6_V1.2]_20241122.pdf) |<p align="center" width="10%"> <img src="image/12.png" alt="example" width="100%"> </p> |
 
 ## FAQ
 

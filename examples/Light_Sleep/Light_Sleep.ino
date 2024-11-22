@@ -2,7 +2,7 @@
  * @Description: ESP Sleep
  * @Author: LILYGO_L
  * @Date: 2023-08-18 15:26:31
- * @LastEditTime: 2024-07-11 14:03:52
+ * @LastEditTime: 2024-11-22 16:37:31
  * @License: GPL 3.0
  */
 #include "Arduino.h"
@@ -39,7 +39,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Ciallo");
-    
+
     if (ETA4662->begin() == true)
     {
         Serial.println("ETA4662 initialization successfully");

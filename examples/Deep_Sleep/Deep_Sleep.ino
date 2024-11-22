@@ -2,7 +2,7 @@
  * @Description: ESP Sleep
  * @Author: LILYGO_L
  * @Date: 2023-08-18 15:26:31
- * @LastEditTime: 2024-11-22 11:05:27
+ * @LastEditTime: 2024-11-22 14:39:34
  * @License: GPL 3.0
  */
 #include "Arduino.h"
@@ -26,6 +26,11 @@ Arduino_GFX *gfx = new Arduino_GC9107(
 std::shared_ptr<Arduino_IIC_DriveBus> IIC_Bus =
     std::make_shared<Arduino_HWIIC>(IIC_SDA, IIC_SCL, &Wire);
 
+void Arduino_IIC_Touch_Interrupt(void);
+
+std::unique_ptr<Arduino_IIC> CST816T(new Arduino_CST816x(IIC_Bus, CST816T_DEVICE_ADDRESS,
+                                                         TP_RST, TP_INT, Arduino_IIC_Touch_Interrupt));
+
 std::unique_ptr<Arduino_IIC> LSM6DSL(new Arduino_LSM6DSL(IIC_Bus, LSM6DSL_DEVICE_ADDRESS,
                                                          DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
 
@@ -34,6 +39,11 @@ std::unique_ptr<Arduino_IIC> ETA4662(new Arduino_ETA4662(IIC_Bus, ETA4662_DEVICE
 
 std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
                                                            DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
+
+void Arduino_IIC_Touch_Interrupt(void)
+{
+    CST816T->IIC_Interrupt_Flag = true;
+}
 
 void setup()
 {
@@ -51,6 +61,15 @@ void setup()
     else
     {
         Serial.println("Power chip initialization failed");
+    }
+
+    if (CST816T->begin() == false)
+    {
+        Serial.println("CST816T initialization fail");
+    }
+    else
+    {
+        Serial.println("CST816T initialization successfully");
     }
 
     pinMode(LSM6DSL_IIC_ADDRESS_MODE, OUTPUT);
@@ -107,6 +126,9 @@ void loop()
 
         ledcWrite(LCD_BL, 255); // 关闭屏幕
         gfx->displayOff();
+
+        CST816T->IIC_Write_Device_State(CST816T->Arduino_IIC_Touch::Device::TOUCH_DEVICE_SLEEP_MODE,
+                                        CST816T->Arduino_IIC_Touch::Device_State::TOUCH_DEVICE_ON);
 
         delay(1000);
 

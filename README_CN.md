@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-11-21 15:29:14
+ * @LastEditTime: 2024-11-22 17:11:15
  * @License: GPL 3.0
 -->
 
@@ -246,8 +246,8 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 ### 功耗
 | Firmware | Program| Description | Picture |
 | ------  | ------  | ------ | ------ | 
-| [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` | 功耗: 553uA | <p align="center" width="10%"> <img src="image/13.jpg" alt="example" width="50%"> </p> |
-| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | 功耗: 170uA |<p align="center" width="10%"> <img src="image/12.jpg" alt="example" width="50%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` | 功耗: 516.81uA <br /> 更多信息请查看 [功耗测试日志](./relevant%20test/PowerConsumptionTestLog_[T-QT-C6_V1.2]_20241122.pdf) | <p align="center" width="10%"> <img src="image/13.png" alt="example" width="100%"> </p> |
+| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | 功耗: 172.61uA <br /> 更多信息请查看 [功耗测试日志](./relevant%20test/PowerConsumptionTestLog_[T-QT-C6_V1.2]_20241122.pdf) |<p align="center" width="10%"> <img src="image/12.png" alt="example" width="100%"> </p> |
 
 ## 常见问题
 
