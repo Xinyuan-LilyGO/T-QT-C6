@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-11-22 17:11:15
+ * @LastEditTime: 2024-11-23 10:42:19
  * @License: GPL 3.0
 -->
 
@@ -139,6 +139,7 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 | [SGM41562](./examples/SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 | [Lvgl_CIT_ETA4662](./examples/Lvgl_CIT_ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | 出厂初始测试文件 |  |
 | [Lvgl_CIT_SGM41562](./examples/Lvgl_CIT_SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | 出厂初始测试文件 |  |
+| [Light_Sleep_Wakeup](./examples/Light_Sleep_Wakeup) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 
 | Firmware | Description | Picture |
 | ------  | ------  | ------ |

@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-11-22 17:13:30
+ * @LastEditTime: 2024-11-23 10:42:44
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
@@ -142,6 +142,7 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 | [SGM41562](./examples/SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 | [Lvgl_CIT_ETA4662](./examples/Lvgl_CIT_ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | Factory original test documents |  |
 | [Lvgl_CIT_SGM41562](./examples/Lvgl_CIT_SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | Factory original test documents |  |
+| [Light_Sleep_Wakeup](./examples/Light_Sleep_Wakeup) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 
 | Firmware | Description | Picture |
 | ------  | ------  | ------ |
