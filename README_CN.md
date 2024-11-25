@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-11-23 10:42:19
+ * @LastEditTime: 2024-11-25 16:26:01
  * @License: GPL 3.0
 -->
 
@@ -233,6 +233,8 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 > #### T-QT-C6_V1.1-V1.2
 > | 惯性传感器引脚   | ESP32C6引脚      |
 > | :------------------: | :------------------:|
+> | SDA      | IO21                  |
+> | SCL      | IO22                  |
 > | LSM6DSL_IIC_ADDRESS_MODE      | IO3      |
 > | INT1      | IO0                  |
 > | INT2      | IO1                  |
