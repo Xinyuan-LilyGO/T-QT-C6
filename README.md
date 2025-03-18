@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-12-06 15:24:41
+ * @LastEditTime: 2025-03-18 09:38:23
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
@@ -137,7 +137,6 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 | [ETA4662](./examples/ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 | [GFX](./examples/GFX) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 | [IMU](./examples/IMU) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [IMU_KalmanFilter](./examples/IMU_KalmanFilter) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 | [IMU_Level](./examples/IMU_Level) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 | [SGM41562](./examples/SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
 | [Lvgl_CIT_ETA4662](./examples/Lvgl_CIT_ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | Factory original test documents |  |

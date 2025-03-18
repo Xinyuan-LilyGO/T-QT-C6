@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-10-05 11:31:11
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-09-27 14:35:46
+ * @LastEditTime: 2025-03-18 09:59:19
  * @License: GPL 3.0
  */
 #include <Arduino.h>
@@ -16,7 +16,6 @@
 #include "events_init.h"
 #include "Material_16Bit.h"
 #include <math.h>
-#include "Kalman.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
 
@@ -39,20 +38,12 @@
 const char *fileDownloadUrl = "http://music.163.com/song/media/outer/url?id=26122999.mp3";
 // const char *fileDownloadUrl = "https://github.com/espressif/arduino-esp32/releases/download/3.0.1/esp32-3.0.1.zip";
 
-static size_t timer;
 static size_t CycleTime = 0;
 
 double roll, pitch;
 
 double accX, accY, accZ;
 double gyroX, gyroY, gyroZ;
-
-double gyroXangle, gyroYangle; // Angle calculate using the gyro only
-double compAngleX, compAngleY; // Calculated angle using a complementary filter
-double kalAngleX, kalAngleY;   // Calculated angle using a Kalman filter
-
-Kalman kalmanX; // Create the Kalman instances
-Kalman kalmanY;
 
 void Btn_Start_Testing_Initialization(lv_ui *ui)
 {
@@ -926,7 +917,6 @@ void Window_WIFI_STA_Test_Loop(void)
 
 void Window_IMU_Test_Loop(void)
 {
-    // KalmanFilter
     accX = LSM6DSL->IIC_Read_Device_Value(LSM6DSL->Arduino_IIC_IMU::Value_Information::IMU_ACCELERATION_X_SIGNED);
     delay(5);
     accY = LSM6DSL->IIC_Read_Device_Value(LSM6DSL->Arduino_IIC_IMU::Value_Information::IMU_ACCELERATION_Y_SIGNED);
@@ -940,45 +930,9 @@ void Window_IMU_Test_Loop(void)
     gyroZ = LSM6DSL->IIC_Read_Device_Value(LSM6DSL->Arduino_IIC_IMU::Value_Information::IMU_GYROSCOPE_Z_SIGNED);
     delay(5);
 
-    double dt = (double)(micros() - timer) / 1000000; // Calculate delta time
-    timer = micros();
-
     roll = atan2(accY, accZ) * RAD_TO_DEG;
     pitch = atan(-accX / sqrt(accY * accY + accZ * accZ)) * RAD_TO_DEG;
 
-    double gyroXrate = gyroX / 131.0; // Convert to deg/s
-    double gyroYrate = gyroY / 131.0; // Convert to deg/s
-
-    // This fixes the transition problem when the accelerometer angle jumps between -180 and 180 degrees
-    if ((roll < -90 && kalAngleX > 90) || (roll > 90 && kalAngleX < -90))
-    {
-        kalmanX.setAngle(roll);
-        compAngleX = roll;
-        kalAngleX = roll;
-        gyroXangle = roll;
-    }
-    else
-        kalAngleX = kalmanX.getAngle(roll, gyroXrate, dt); // Calculate the angle using a Kalman filter
-
-    if (abs(kalAngleX) > 90)
-        gyroYrate = -gyroYrate; // Invert rate, so it fits the restriced accelerometer reading
-    kalAngleY = kalmanY.getAngle(pitch, gyroYrate, dt);
-
-    gyroXangle += gyroXrate * dt; // Calculate gyro angle without any filter
-    gyroYangle += gyroYrate * dt;
-    // gyroXangle += kalmanX.getRate() * dt; // Calculate gyro angle using the unbiased rate
-    // gyroYangle += kalmanY.getRate() * dt;
-
-    compAngleX = 0.93 * (compAngleX + gyroXrate * dt) + 0.07 * roll; // Calculate the angle using a Complimentary filter
-    compAngleY = 0.93 * (compAngleY + gyroYrate * dt) + 0.07 * pitch;
-
-    // Reset the gyro angle when it has drifted too much
-    if (gyroXangle < -180 || gyroXangle > 180)
-        gyroXangle = kalAngleX;
-    if (gyroYangle < -180 || gyroYangle > 180)
-        gyroYangle = kalAngleY;
-
-    double roll_2, pitch_2;
     if ((roll > 90))
     {
         roll = 90 - (roll - 90);

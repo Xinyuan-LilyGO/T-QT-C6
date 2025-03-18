@@ -9,19 +9,17 @@
     and stationary. The calibration sequence should start from the gyroscope sensor to the accelerometer sensor.
  * @Author: LILYGO_L
  * @Date: 2024-02-20 17:13:03
- * @LastEditTime: 2024-07-11 15:12:03
+ * @LastEditTime: 2025-03-18 09:39:33
  * @License: GPL 3.0
  */
 #include "Arduino_DriveBus_Library.h"
 #include "Arduino_GFX_Library.h"
 #include <math.h>
 #include "pin_config.h"
-#include "Kalman.h"
 
 static size_t CycleTime1 = 0;
 static size_t CycleTime2 = 0;
 static size_t CycleTime3 = 0;
-static size_t timer;
 
 int32_t BREATHING_LIGHT_Brightness = 0;
 bool Battery_Charging_Flag = false;
@@ -31,13 +29,6 @@ double roll, pitch;
 
 double accX, accY, accZ;
 double gyroX, gyroY, gyroZ;
-
-double gyroXangle, gyroYangle; // Angle calculate using the gyro only
-double compAngleX, compAngleY; // Calculated angle using a complementary filter
-double kalAngleX, kalAngleY;   // Calculated angle using a Kalman filter
-
-Kalman kalmanX; // Create the Kalman instances
-Kalman kalmanY;
 
 std::shared_ptr<Arduino_IIC_DriveBus> IIC_Bus =
     std::make_shared<Arduino_HWIIC>(IIC_SDA, IIC_SCL, &Wire);
@@ -175,7 +166,6 @@ void loop()
 {
     if (millis() > CycleTime1)
     {
-        // KalmanFilter
         accX = LSM6DSL->IIC_Read_Device_Value(LSM6DSL->Arduino_IIC_IMU::Value_Information::IMU_ACCELERATION_X_SIGNED);
         delay(5);
         accY = LSM6DSL->IIC_Read_Device_Value(LSM6DSL->Arduino_IIC_IMU::Value_Information::IMU_ACCELERATION_Y_SIGNED);
@@ -189,45 +179,9 @@ void loop()
         gyroZ = LSM6DSL->IIC_Read_Device_Value(LSM6DSL->Arduino_IIC_IMU::Value_Information::IMU_GYROSCOPE_Z_SIGNED);
         delay(5);
 
-        double dt = (double)(micros() - timer) / 1000000; // Calculate delta time
-        timer = micros();
-
         roll = atan2(accY, accZ) * RAD_TO_DEG;
         pitch = atan(-accX / sqrt(accY * accY + accZ * accZ)) * RAD_TO_DEG;
 
-        double gyroXrate = gyroX / 131.0; // Convert to deg/s
-        double gyroYrate = gyroY / 131.0; // Convert to deg/s
-
-        // This fixes the transition problem when the accelerometer angle jumps between -180 and 180 degrees
-        if ((roll < -90 && kalAngleX > 90) || (roll > 90 && kalAngleX < -90))
-        {
-            kalmanX.setAngle(roll);
-            compAngleX = roll;
-            kalAngleX = roll;
-            gyroXangle = roll;
-        }
-        else
-            kalAngleX = kalmanX.getAngle(roll, gyroXrate, dt); // Calculate the angle using a Kalman filter
-
-        if (abs(kalAngleX) > 90)
-            gyroYrate = -gyroYrate; // Invert rate, so it fits the restriced accelerometer reading
-        kalAngleY = kalmanY.getAngle(pitch, gyroYrate, dt);
-
-        gyroXangle += gyroXrate * dt; // Calculate gyro angle without any filter
-        gyroYangle += gyroYrate * dt;
-        // gyroXangle += kalmanX.getRate() * dt; // Calculate gyro angle using the unbiased rate
-        // gyroYangle += kalmanY.getRate() * dt;
-
-        compAngleX = 0.93 * (compAngleX + gyroXrate * dt) + 0.07 * roll; // Calculate the angle using a Complimentary filter
-        compAngleY = 0.93 * (compAngleY + gyroYrate * dt) + 0.07 * pitch;
-
-        // Reset the gyro angle when it has drifted too much
-        if (gyroXangle < -180 || gyroXangle > 180)
-            gyroXangle = kalAngleX;
-        if (gyroYangle < -180 || gyroYangle > 180)
-            gyroYangle = kalAngleY;
-
-        double roll_2, pitch_2;
         if ((roll > 90))
         {
             roll = 90 - (roll - 90);
@@ -255,5 +209,4 @@ void loop()
 
         CycleTime2 = millis() + 100;
     }
-
 }
