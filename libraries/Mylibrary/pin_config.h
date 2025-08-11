@@ -4,9 +4,12 @@
  * @Author: None
  * @Date: 2023-06-05 13:01:59
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2024-07-11 11:58:52
+ * @LastEditTime: 2025-06-03 11:42:21
  */
 #pragma once
+
+// #define T_QT_C6_Battery_V1_0_V1_1
+#define T_QT_C6_Battery_V1_2
 
 // N085-1212TBWIG06-C08
 #define LCD_WIDTH 128
@@ -38,4 +41,9 @@
 #define SLEEP_WAKE_UP_INT 7
 
 // LSM6DSL
+#if defined T_QT_C6_Battery_V1_0_V1_1
 #define LSM6DSL_IIC_ADDRESS_MODE 3
+#elif defined T_QT_C6_Battery_V1_2
+#define LSM6DSL_EN 3
+#endif
+

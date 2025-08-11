@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-10-05 11:31:11
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-18 09:59:19
+ * @LastEditTime: 2025-08-11 14:16:34
  * @License: GPL 3.0
  */
 #include <Arduino.h>
@@ -369,61 +369,63 @@ void Window_IMU_Test_Initialization()
                                     2000);
 
     gfx->fillScreen(WHITE);
-    Serial.printf("\nStart calibrating the gyroscope and accelerometer\n");
-    gfx->setCursor(10, 60);
-    gfx->setTextColor(RED);
-    gfx->printf("Start calibrating the gyroscope and accelerometer");
-    delay(1000);
+    // Serial.printf("\nStart calibrating the gyroscope and accelerometer\n");
+    // gfx->setCursor(10, 60);
+    // gfx->setTextColor(RED);
+    // gfx->printf("Start calibrating the gyroscope and accelerometer");
+    // delay(1000);
     // 将器件静止后再校正陀螺仪传感器
-    if (LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_GYROSCOPE_CORRECTION,
-                                        100) == false)
-    {
-        Serial.printf("\nLSM6DSL gyroscope correction fail\n");
-        Serial.printf("Please ensure that the device is in a stationary state!\n\n");
+    // if (LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_GYROSCOPE_CORRECTION,
+    //                                     100) == false)
+    // {
+    //     Serial.printf("\nLSM6DSL gyroscope correction fail\n");
+    //     Serial.printf("Please ensure that the device is in a stationary state!\n\n");
 
-        gfx->fillScreen(WHITE);
-        gfx->setCursor(10, 60);
-        gfx->setTextColor(RED);
-        gfx->printf("LSM6DSL gyroscope correction fail\nPlease ensure that the device is in a stationary state!");
-        delay(1000);
-    }
-    else
-    {
-        Serial.printf("LSM6DSL gyroscope correction successfully\n");
-        gfx->fillScreen(WHITE);
-        gfx->setCursor(10, 60);
-        gfx->setTextColor(RED);
-        gfx->printf("LSM6DSL gyroscope correction successfully");
+    //     gfx->fillScreen(WHITE);
+    //     gfx->setCursor(10, 60);
+    //     gfx->setTextColor(RED);
+    //     gfx->printf("LSM6DSL gyroscope correction fail\nPlease ensure that the device is in a stationary state!");
+    //     delay(1000);
+    // }
+    // else
+    // {
+        // Serial.printf("LSM6DSL gyroscope correction successfully\n");
+        // gfx->fillScreen(WHITE);
+        // gfx->setCursor(10, 60);
+        // gfx->setTextColor(RED);
+        // gfx->printf("LSM6DSL gyroscope correction successfully");
 
         // 将器件正放静止后再校正加速度传感器
         // 最好在陀螺仪校正后立即进行加速度校正
-        if (LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_ACCELERATION_CORRECTION,
-                                            100) == false)
-        {
-            Serial.printf("\nLSM6DSL acceleration correction fail\n");
-            Serial.printf("Please ensure that the device is in a stationary state!\n\n");
-            gfx->fillScreen(WHITE);
-            gfx->setCursor(10, 60);
-            gfx->setTextColor(RED);
-            gfx->printf("LSM6DSL acceleration correction fail\nPlease ensure that the device is in a stationary state!");
-            delay(1000);
-        }
-        else
-        {
-            Serial.printf("LSM6DSL acceleration correction successfully\n\n");
-            gfx->fillScreen(WHITE);
-            gfx->setCursor(10, 60);
-            gfx->setTextColor(RED);
-            gfx->printf("LSM6DSL acceleration correction successfully");
-            delay(1000);
+        // if (LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_ACCELERATION_CORRECTION,
+        //                                     100) == false)
+        // {
+        //     Serial.printf("\nLSM6DSL acceleration correction fail\n");
+        //     Serial.printf("Please ensure that the device is in a stationary state!\n\n");
+        //     gfx->fillScreen(WHITE);
+        //     gfx->setCursor(10, 60);
+        //     gfx->setTextColor(RED);
+        //     gfx->printf("LSM6DSL acceleration correction fail\nPlease ensure that the device is in a stationary state!");
+        //     delay(1000);
+        // }
+        // else
+        // {
+        //     Serial.printf("LSM6DSL acceleration correction successfully\n\n");
+        //     gfx->fillScreen(WHITE);
+        //     gfx->setCursor(10, 60);
+        //     gfx->setTextColor(RED);
+        //     gfx->printf("LSM6DSL acceleration correction successfully");
+        //     delay(1000);
 
-            gfx->fillScreen(WHITE);
+            // gfx->fillScreen(WHITE);
             // gfx->drawRect(14, 0, 100, 100, RED);
             // gfx->fillCircle(64, 50, 3, RED);
 
-            CIT_UI.Window_Initialization_Flag = true;
-        }
-    }
+            // CIT_UI.Window_Initialization_Flag = true;
+        // }
+    // }
+
+    CIT_UI.Window_Initialization_Flag = true;
 }
 
 void Window_LCD_Backlight_Test_Loop(void)

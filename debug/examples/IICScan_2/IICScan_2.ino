@@ -2,7 +2,7 @@
  * @Description: 搜索IIC设备
  * @Author: LILYGO_L
  * @Date: 2023-11-16 11:10:02
- * @LastEditTime: 2024-07-11 14:12:47
+ * @LastEditTime: 2025-06-03 14:53:26
  * @License: GPL 3.0
  */
 #include <Arduino.h>
@@ -49,6 +49,14 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Ciallo");
+
+#if defined T_QT_C6_Battery_V1_0_V1_1
+    pinMode(LSM6DSL_IIC_ADDRESS_MODE, OUTPUT);
+    digitalWrite(LSM6DSL_IIC_ADDRESS_MODE, LOW); // 设置LSM6DSL的IIC地址为0x6A
+#elif defined T_QT_C6_Battery_V1_2
+    pinMode(LSM6DSL_EN, OUTPUT);
+    digitalWrite(LSM6DSL_EN, HIGH); // 开启LSM6DSL
+#endif
 
     if (ETA4662->begin() == true)
     {

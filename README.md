@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-18 09:38:23
+ * @LastEditTime: 2025-08-11 15:31:05
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
@@ -31,6 +31,7 @@
 | T-QT-C6_V1.0       | 2023-12-20      |Original version      |
 | T-QT-C6_V1.1     | 2024-03-27         |New support for battery backboards      |
 | T-QT-C6_V1.2      | 2024-06-13        |Modify the power management chip to SGM41562|
+| T-QT-C6_Battery_V1.2      | 2025-08-11   |Modify the backplane pins to use a 2-pin, 1.25mm pitch connector for the battery connection, improving system stability|
 
 ## PurchaseLink
 

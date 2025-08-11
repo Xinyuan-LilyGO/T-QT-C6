@@ -2,7 +2,7 @@
  * @Description: This is a user testing program CIT written for TQT-C6.
  * @Author: LILYGO_L
  * @Date: 2023-09-22 11:59:37
- * @LastEditTime: 2024-10-17 10:47:58
+ * @LastEditTime: 2025-06-03 15:18:32
  * @License: GPL 3.0
  */
 #include "custom.h"
@@ -131,8 +131,13 @@ void setup()
     Serial.begin(115200);
     Serial.println("Ciallo");
 
+#if defined T_QT_C6_Battery_V1_0_V1_1
     pinMode(LSM6DSL_IIC_ADDRESS_MODE, OUTPUT);
     digitalWrite(LSM6DSL_IIC_ADDRESS_MODE, LOW); // 设置LSM6DSL的IIC地址为0x6A
+#elif defined T_QT_C6_Battery_V1_2
+    pinMode(LSM6DSL_EN, OUTPUT);
+    digitalWrite(LSM6DSL_EN, HIGH); // 开启LSM6DSL
+#endif
 
     // 呼吸灯
     pinMode(BREATHING_LIGHT, OUTPUT);
