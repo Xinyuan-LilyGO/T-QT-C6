@@ -130,7 +130,7 @@ void setup()
 {
     Serial.begin(115200);
     Serial.println("Ciallo");
-    Serial.println("firmware: [TQT-C6_MCU_V1.2][TQT-C6_Battery_V1.2][Lvgl_CIT_SGM41562]_firmware_202508111417");
+    Serial.println("firmware: [TQT-C6_MCU_V1.2][TQT-C6_Battery_V1.2][Lvgl_CIT_SGM41562]_firmware_202508111745");
 
 #if defined T_QT_C6_Battery_V1_0_V1_1
     pinMode(LSM6DSL_IIC_ADDRESS_MODE, OUTPUT);

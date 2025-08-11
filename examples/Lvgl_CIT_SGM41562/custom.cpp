@@ -24,7 +24,7 @@
 // #define WIFI_SSID "LilyGo-AABB"
 // #define WIFI_PASSWORD "xinyuandianzi"
 
-#define WIFI_CONNECT_WAIT_MAX 5000
+#define WIFI_CONNECT_WAIT_MAX 30000
 
 #define NTP_SERVER1 "pool.ntp.org"
 #define NTP_SERVER2 "time.nist.gov"
@@ -673,6 +673,8 @@ void Window_WIFI_STA_Test_Loop(void)
         WiFi.mode(WIFI_STA);
         WiFi.disconnect();
         delay(100);
+
+        WiFi.setTxPower(wifi_power_t::WIFI_POWER_21dBm);
 
         wifi_num = WiFi.scanNetworks();
         if (wifi_num == 0)
