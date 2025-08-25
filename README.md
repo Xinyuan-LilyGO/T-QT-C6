@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-08-11 15:31:05
+ * @LastEditTime: 2025-08-25 15:54:01
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
@@ -291,6 +291,6 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 * [lsm6dsl-stmicroelectronics_en](./information/lsm6dsl-stmicroelectronics_en.pdf)
 
 ## DependentLibraries
-* [Arduino_DriveBus-1.1.10](https://github.com/Xk-w/Arduino_DriveBus)
+* [Arduino_DriveBus-1.1.16]()
 * [Arduino_GFX-1.3.7](https://github.com/moononournation/Arduino_GFX)
 * [lvgl-8.3.5](https://github.com/lvgl/lvgl)

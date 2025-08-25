@@ -3,7 +3,7 @@
  * @version: V1.0.0
  * @Author: LILYGO_L
  * @Date: 2023-12-08 10:45:26
- * @LastEditors: Xk_w
+ * @LastEditors: LILYGO_L
  * @LastEditTime: 2024-06-03 15:22:37
  * @License: GPL 3.0
  */

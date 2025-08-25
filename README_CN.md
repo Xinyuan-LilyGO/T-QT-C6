@@ -288,6 +288,6 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 * [lsm6dsl-stmicroelectronics_en](./information/lsm6dsl-stmicroelectronics_en.pdf)
 
 ## 依赖库
-* [Arduino_DriveBus-1.1.10](https://github.com/Xk-w/Arduino_DriveBus)
+* [Arduino_DriveBus-1.1.16]()
 * [Arduino_GFX-1.3.7](https://github.com/moononournation/Arduino_GFX)
 * [lvgl-8.3.5](https://github.com/lvgl/lvgl)
