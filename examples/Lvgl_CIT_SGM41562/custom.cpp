@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-10-05 11:31:11
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-08-11 14:16:34
+ * @LastEditTime: 2025-09-18 09:06:15
  * @License: GPL 3.0
  */
 #include <Arduino.h>
@@ -389,40 +389,40 @@ void Window_IMU_Test_Initialization()
     // }
     // else
     // {
-        // Serial.printf("LSM6DSL gyroscope correction successfully\n");
-        // gfx->fillScreen(WHITE);
-        // gfx->setCursor(10, 60);
-        // gfx->setTextColor(RED);
-        // gfx->printf("LSM6DSL gyroscope correction successfully");
+    // Serial.printf("LSM6DSL gyroscope correction successfully\n");
+    // gfx->fillScreen(WHITE);
+    // gfx->setCursor(10, 60);
+    // gfx->setTextColor(RED);
+    // gfx->printf("LSM6DSL gyroscope correction successfully");
 
-        // 将器件正放静止后再校正加速度传感器
-        // 最好在陀螺仪校正后立即进行加速度校正
-        // if (LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_ACCELERATION_CORRECTION,
-        //                                     100) == false)
-        // {
-        //     Serial.printf("\nLSM6DSL acceleration correction fail\n");
-        //     Serial.printf("Please ensure that the device is in a stationary state!\n\n");
-        //     gfx->fillScreen(WHITE);
-        //     gfx->setCursor(10, 60);
-        //     gfx->setTextColor(RED);
-        //     gfx->printf("LSM6DSL acceleration correction fail\nPlease ensure that the device is in a stationary state!");
-        //     delay(1000);
-        // }
-        // else
-        // {
-        //     Serial.printf("LSM6DSL acceleration correction successfully\n\n");
-        //     gfx->fillScreen(WHITE);
-        //     gfx->setCursor(10, 60);
-        //     gfx->setTextColor(RED);
-        //     gfx->printf("LSM6DSL acceleration correction successfully");
-        //     delay(1000);
+    // 将器件正放静止后再校正加速度传感器
+    // 最好在陀螺仪校正后立即进行加速度校正
+    // if (LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_ACCELERATION_CORRECTION,
+    //                                     100) == false)
+    // {
+    //     Serial.printf("\nLSM6DSL acceleration correction fail\n");
+    //     Serial.printf("Please ensure that the device is in a stationary state!\n\n");
+    //     gfx->fillScreen(WHITE);
+    //     gfx->setCursor(10, 60);
+    //     gfx->setTextColor(RED);
+    //     gfx->printf("LSM6DSL acceleration correction fail\nPlease ensure that the device is in a stationary state!");
+    //     delay(1000);
+    // }
+    // else
+    // {
+    //     Serial.printf("LSM6DSL acceleration correction successfully\n\n");
+    //     gfx->fillScreen(WHITE);
+    //     gfx->setCursor(10, 60);
+    //     gfx->setTextColor(RED);
+    //     gfx->printf("LSM6DSL acceleration correction successfully");
+    //     delay(1000);
 
-            // gfx->fillScreen(WHITE);
-            // gfx->drawRect(14, 0, 100, 100, RED);
-            // gfx->fillCircle(64, 50, 3, RED);
+    // gfx->fillScreen(WHITE);
+    // gfx->drawRect(14, 0, 100, 100, RED);
+    // gfx->fillCircle(64, 50, 3, RED);
 
-            // CIT_UI.Window_Initialization_Flag = true;
-        // }
+    // CIT_UI.Window_Initialization_Flag = true;
+    // }
     // }
 
     CIT_UI.Window_Initialization_Flag = true;
@@ -496,9 +496,9 @@ void Window_Touch_Test_Loop(void)
     String temp;
 
     temp = "ID: ";
-    temp += (String)CST816T->IIC_Read_Device_ID();
+    temp += (String)CST816T->IIC_Device_ID();
     temp += "\nDevice: ";
-    if (CST816T->IIC_Read_Device_ID() == 0xB5)
+    if (CST816T->IIC_Device_ID() == 0xB5)
     {
         temp += "CST816T";
         temp += "\n";
@@ -542,7 +542,7 @@ void Window_Power_Test_Loop(void)
     String temp;
     String temp2;
 
-    int32_t Device_ID = SGM41562->IIC_Read_Device_ID();
+    int32_t Device_ID = SGM41562->IIC_Device_ID();
     String Battery_Status = SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_BATTERY_FAULT_STATUS);
     uint32_t Battery_Voltage = 0;
 
@@ -567,16 +567,16 @@ void Window_Power_Test_Loop(void)
             Battery_Voltage = (analogReadMilliVolts(BATTERY_ADC_DATA) * 2);
         }
 
-        if (Battery_Voltage > 2500) // 电池电压大于2.5V就充电否则一律不充电
-        {
-            SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                             SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
-        }
-        else
-        {
-            SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                             SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
-        }
+        // if (Battery_Voltage > 2500) // 电池电压大于2.5V就充电否则一律不充电
+        // {
+        SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
+                                         SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
+        // }
+        // else
+        // {
+        //     SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
+        //                                      SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+        // }
     }
 
     temp = "ID: ";

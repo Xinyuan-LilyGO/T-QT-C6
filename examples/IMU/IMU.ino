@@ -126,7 +126,7 @@ void loop()
     //     Serial.printf("System running time: %d\n\n", (uint32_t)millis() / 1000);
     //     Serial.printf("IIC_Bus.use_count(): %d\n\n", (int32_t)IIC_Bus.use_count());
 
-    //     Serial.printf("ID: %#X \n", (int32_t)LSM6DSL->IIC_Read_Device_ID());
+    //     Serial.printf("ID: %#X \n", (int32_t)LSM6DSL->IIC_Device_ID());
 
     //     // 只有在启动加速度或陀螺仪的时候才能查看设备温度
     //     Serial.printf("IMU Device Temperature: %.3f ^C \n",

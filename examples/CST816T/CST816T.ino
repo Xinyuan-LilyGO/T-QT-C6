@@ -94,13 +94,13 @@ void setup()
     gfx->setTextColor(PINK);
     gfx->setCursor(0, 128 / 2);
 
-    while ((int32_t)CST816T->IIC_Read_Device_ID() == -1) // 等待读取到ID
+    while ((int32_t)CST816T->IIC_Device_ID() == -1) // 等待读取到ID
     {
         Serial.println("ID read failed");
         delay(1000);
     }
 
-    gfx->printf("ID: %#X \n\n", (int32_t)CST816T->IIC_Read_Device_ID());
+    gfx->printf("ID: %#X \n\n", (int32_t)CST816T->IIC_Device_ID());
     gfx->setTextColor(MAGENTA);
     delay(1000);
 }

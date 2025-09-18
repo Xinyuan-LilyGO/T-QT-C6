@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-10-05 11:31:11
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-18 09:43:05
+ * @LastEditTime: 2025-09-18 09:08:03
  * @License: GPL 3.0
  */
 #include <Arduino.h>
@@ -491,9 +491,9 @@ void Window_Touch_Test_Loop(void)
     String temp;
 
     temp = "ID: ";
-    temp += (String)CST816T->IIC_Read_Device_ID();
+    temp += (String)CST816T->IIC_Device_ID();
     temp += "\nDevice: ";
-    if (CST816T->IIC_Read_Device_ID() == 0xB5)
+    if (CST816T->IIC_Device_ID() == 0xB5)
     {
         temp += "CST816T";
         temp += "\n";
@@ -537,7 +537,7 @@ void Window_Power_Test_Loop(void)
     String temp;
     String temp2;
 
-    int32_t Device_ID = ETA4662->IIC_Read_Device_ID();
+    int32_t Device_ID = ETA4662->IIC_Device_ID();
     String Battery_Status = ETA4662->IIC_Read_Device_State(ETA4662->Arduino_IIC_Power::Status_Information::POWER_BATTERY_FAULT_STATUS);
     uint32_t Battery_Voltage = 0;
 
@@ -562,16 +562,16 @@ void Window_Power_Test_Loop(void)
             Battery_Voltage = (analogReadMilliVolts(BATTERY_ADC_DATA) * 2);
         }
 
-        if (Battery_Voltage > 2500) // 电池电压大于2.5V就充电否则一律不充电
-        {
-            ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                            ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
-        }
-        else
-        {
-            ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                            ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
-        }
+        // if (Battery_Voltage > 2500) // 电池电压大于2.5V就充电否则一律不充电
+        // {
+        ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
+                                        ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
+        // }
+        // else
+        // {
+        //     ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
+        //                                     ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+        // }
     }
 
     temp = "ID: ";

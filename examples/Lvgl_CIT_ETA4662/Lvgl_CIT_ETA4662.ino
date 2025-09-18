@@ -2,7 +2,7 @@
  * @Description: This is a user testing program CIT written for TQT-C6.
  * @Author: LILYGO_L
  * @Date: 2023-09-22 11:59:37
- * @LastEditTime: 2025-06-03 15:18:32
+ * @LastEditTime: 2025-09-18 09:17:47
  * @License: GPL 3.0
  */
 #include "custom.h"
@@ -173,8 +173,8 @@ void setup()
     }
     Serial.println("ETA4662 initialization successfully");
 
-    // ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-    //                                 ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
+    ETA4662->IIC_Write_Device_State(ETA4662->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
+                                    ETA4662->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
 
     // 热调节阈值设置为120度
     ETA4662->IIC_Write_Device_Value(ETA4662->Arduino_IIC_Power::Device_Value::POWER_DEVICE_THERMAL_REGULATION_THRESHOLD, 120);

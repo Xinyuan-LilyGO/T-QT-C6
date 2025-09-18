@@ -77,7 +77,7 @@ void loop()
     Serial.printf("System running time: %d\n\n", (uint32_t)millis() / 1000);
     Serial.printf("IIC_Bus.use_count(): %d\n\n", (int32_t)IIC_Bus.use_count());
 
-    Serial.printf("ID: %#X \n", (int32_t)ETA4662->IIC_Read_Device_ID());
+    Serial.printf("ID: %#X \n", (int32_t)ETA4662->IIC_Device_ID());
 
     Serial.printf("\nCharging Status: %s \n",
                   (ETA4662->IIC_Read_Device_State(ETA4662->Arduino_IIC_Power::Status_Information::POWER_CHARGING_STATUS)).c_str());

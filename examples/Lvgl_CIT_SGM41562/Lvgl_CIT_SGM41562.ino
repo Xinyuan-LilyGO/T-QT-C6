@@ -2,7 +2,7 @@
  * @Description: This is a user testing program CIT written for TQT-C6.
  * @Author: LILYGO_L
  * @Date: 2023-09-22 11:59:37
- * @LastEditTime: 2025-08-11 11:26:19
+ * @LastEditTime: 2025-09-18 09:18:13
  * @License: GPL 3.0
  */
 #include "custom.h"
@@ -166,8 +166,8 @@ void setup()
         Serial.println("SGM41562 initialization successfully");
     }
 
-    // SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-    //                                 SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
+    SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
+                                    SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
 
     // 热调节阈值设置为120度
     SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_THERMAL_REGULATION_THRESHOLD, 120);
