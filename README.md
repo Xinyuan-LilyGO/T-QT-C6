@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-08-25 15:54:01
+ * @LastEditTime: 2026-08-14 14:58:43
  * @License: GPL 3.0
 -->
 <h1 align = "center">T-QT-C6</h1>
@@ -276,8 +276,6 @@ The newly updated T-QT-C6_V1.1-V1.2 has added battery bottom board power supply 
 * A. Please hold down the "BOOT-0" button and try downloading the program again.
 
 ## Project
-* [T-QT-C6_V1.0](./project/T-QT-C6_V1.0)
-* [T-QT-C6_V1.1](./project/T-QT-C6_V1.1)
 * [T-QT-C6_V1.2](./project/T-QT-C6_V1.2)
 
 ## Information

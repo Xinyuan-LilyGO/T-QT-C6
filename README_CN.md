@@ -4,7 +4,7 @@
  * @Author: LILYGO_L
  * @Date: 2023-09-11 16:13:14
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-08-11 15:01:14
+ * @LastEditTime: 2026-08-14 14:58:50
  * @License: GPL 3.0
 -->
 
@@ -273,8 +273,6 @@ T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的
 * A. 请按住“BOOT”按键重新下载程序。
 
 ## 项目
-* [T-QT-C6_V1.0](./project/T-QT-C6_V1.0)
-* [T-QT-C6_V1.1](./project/T-QT-C6_V1.1)
 * [T-QT-C6_V1.2](./project/T-QT-C6_V1.2)
 
 ## 资料
