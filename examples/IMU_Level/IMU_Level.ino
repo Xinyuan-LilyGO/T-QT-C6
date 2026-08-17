@@ -42,14 +42,14 @@ std::unique_ptr<Arduino_IIC> ETA4662(new Arduino_ETA4662(IIC_Bus, ETA4662_DEVICE
 std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
                                                            DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
 
-// N085-1212TBWIG06-C08
 Arduino_DataBus *bus = new Arduino_HWSPI(
     LCD_DC /* DC */, LCD_CS /* CS */, LCD_SCLK /* SCK */, LCD_MOSI /* MOSI */, -1 /* MISO */); // Software SPI
 
-Arduino_GFX *gfx = new Arduino_GC9107(
-    bus, LCD_RST /* RST */, 0 /* rotation */, true /* IPS */,
+Arduino_GFX *gfx = new T_QT_C6_LCD_CLASS(
+    bus, LCD_RST /* RST */, 0 /* rotation */, T_QT_C6_LCD_IPS /* IPS */,
     LCD_WIDTH /* width */, LCD_HEIGHT /* height */,
-    2 /* col offset 1 */, 1 /* row offset 1 */, 0 /* col_offset2 */, 0 /* row_offset2 */);
+    T_QT_C6_LCD_COL_OFFSET_1 /* col offset 1 */, T_QT_C6_LCD_ROW_OFFSET_1 /* row offset 1 */,
+    T_QT_C6_LCD_COL_OFFSET_2 /* col offset 2 */, T_QT_C6_LCD_ROW_OFFSET_2 /* row offset 2 */);
 
 void setup()
 {

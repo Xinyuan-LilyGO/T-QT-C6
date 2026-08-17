@@ -16,14 +16,14 @@ static lv_disp_draw_buf_t draw_buf;
 static lv_color_t *disp_draw_buf;
 lv_disp_drv_t disp_drv;
 
-// N085-1212TBWIG06-C08
 Arduino_DataBus *bus = new Arduino_HWSPI(
     LCD_DC /* DC */, LCD_CS /* CS */, LCD_SCLK /* SCK */, LCD_MOSI /* MOSI */, -1 /* MISO */); // Software SPI
 
-Arduino_GFX *gfx = new Arduino_GC9107(
-    bus, LCD_RST /* RST */, 0 /* rotation */, true /* IPS */,
+Arduino_GFX *gfx = new T_QT_C6_LCD_CLASS(
+    bus, LCD_RST /* RST */, 0 /* rotation */, T_QT_C6_LCD_IPS /* IPS */,
     LCD_WIDTH /* width */, LCD_HEIGHT /* height */,
-    2 /* col offset 1 */, 1 /* row offset 1 */, 0 /* col_offset2 */, 0 /* row_offset2 */);
+    T_QT_C6_LCD_COL_OFFSET_1 /* col offset 1 */, T_QT_C6_LCD_ROW_OFFSET_1 /* row offset 1 */,
+    T_QT_C6_LCD_COL_OFFSET_2 /* col offset 2 */, T_QT_C6_LCD_ROW_OFFSET_2 /* row offset 2 */);
 
 std::shared_ptr<Arduino_IIC_DriveBus> IIC_Bus =
     std::make_shared<Arduino_HWIIC>(IIC_SDA, IIC_SCL, &Wire);

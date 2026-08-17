@@ -4,9 +4,36 @@
  * @Author: None
  * @Date: 2023-06-05 13:01:59
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-06-03 11:42:21
+ * @LastEditTime: 2026-08-17 16:09:02
  */
 #pragma once
+
+#define T_QT_C6_LCD_DRIVER_GC9107 1
+#define T_QT_C6_LCD_DRIVER_ST7735 2
+
+// LCD driver selection: uncomment one option only.
+#ifndef T_QT_C6_LCD_DRIVER
+#define T_QT_C6_LCD_DRIVER T_QT_C6_LCD_DRIVER_GC9107
+// #define T_QT_C6_LCD_DRIVER T_QT_C6_LCD_DRIVER_ST7735
+#endif
+
+#if T_QT_C6_LCD_DRIVER == T_QT_C6_LCD_DRIVER_GC9107
+#define T_QT_C6_LCD_CLASS Arduino_GC9107
+#define T_QT_C6_LCD_IPS true
+#define T_QT_C6_LCD_COL_OFFSET_1 2
+#define T_QT_C6_LCD_ROW_OFFSET_1 1
+#define T_QT_C6_LCD_COL_OFFSET_2 0
+#define T_QT_C6_LCD_ROW_OFFSET_2 0
+#elif T_QT_C6_LCD_DRIVER == T_QT_C6_LCD_DRIVER_ST7735
+#define T_QT_C6_LCD_CLASS Arduino_ST7735
+#define T_QT_C6_LCD_IPS true
+#define T_QT_C6_LCD_COL_OFFSET_1 2
+#define T_QT_C6_LCD_ROW_OFFSET_1 3
+#define T_QT_C6_LCD_COL_OFFSET_2 2
+#define T_QT_C6_LCD_ROW_OFFSET_2 3
+#else
+#error "Unsupported T-QT-C6 LCD driver selection"
+#endif
 
 // #define T_QT_C6_Battery_V1_0_V1_1
 #define T_QT_C6_Battery_V1_2
