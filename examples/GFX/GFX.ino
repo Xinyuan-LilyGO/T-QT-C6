@@ -63,26 +63,15 @@ void setup(void)
     ledcWrite(LCD_BL, 0); // 开启屏幕
 
     gfx->begin();
-    gfx->fillScreen(PINK);
-
-    gfx->setCursor(60, 60);
-    gfx->setTextColor(YELLOW);
-    gfx->println("Ciallo");
 }
 
 void loop()
 {
-    for (int i = 255; i > 0; i--)
-    {
-        ledcWrite(LCD_BL, i);
-        delay(5);
-    }
-    delay(1000);
-    for (int i = 0; i <= 255; i++)
-    {
-        ledcWrite(LCD_BL, i);
-        delay(2);
-    }
+    static const uint16_t colors[] = {RED, GREEN, BLUE, WHITE, BLACK};
 
-    delay(2000);
+    for (const uint16_t color : colors)
+    {
+        gfx->fillScreen(color);
+        delay(1000);
+    }
 }
