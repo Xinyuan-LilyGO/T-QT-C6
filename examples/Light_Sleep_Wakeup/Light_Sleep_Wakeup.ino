@@ -9,6 +9,7 @@
 #include "pin_config.h"
 #include "Arduino_GFX_Library.h"
 #include "Arduino_DriveBus_Library.h"
+#include "cpp_bus_driver_library.h"
 
 #define SLEEP_WAKE_UP_INT GPIO_NUM_7
 #define BUTTON_PIN_BITMASK(GPIO) (1ULL << GPIO) // 2 ^ GPIO_NUMBER in hex
@@ -48,8 +49,12 @@ std::unique_ptr<Arduino_IIC> LSM6DSL(new Arduino_LSM6DSL(IIC_Bus, LSM6DSL_DEVICE
 std::unique_ptr<Arduino_IIC> ETA4662(new Arduino_ETA4662(IIC_Bus, ETA4662_DEVICE_ADDRESS,
                                                          DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
 
-std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
-                                                           DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> CPP_IIC_Master_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(IIC_SDA, IIC_SCL);
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> SGM41562_IIC_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(CPP_IIC_Master_Bus);
+std::unique_ptr<cpp_bus_driver::Sgm41562xx> SGM41562(
+    new cpp_bus_driver::Sgm41562xx(SGM41562_IIC_Bus));
 
 Sleep_Operator Sleep_OP;
 
@@ -83,11 +88,15 @@ void setup()
     Serial.begin(115200);
     Serial.println("Ciallo");
 
+    i2c_master_bus_handle_t sgm41562_bus_handle = nullptr;
     if (ETA4662->begin() == true)
     {
         Serial.println("ETA4662 initialization successfully");
     }
-    else if (SGM41562->begin() == true)
+    else if (i2c_master_get_bus_handle(
+                 I2C_NUM_0, &sgm41562_bus_handle) == ESP_OK &&
+             CPP_IIC_Master_Bus->set_bus_handle(sgm41562_bus_handle) &&
+             SGM41562->Init())
     {
         Serial.println("SGM41562 initialization successfully");
     }
@@ -117,11 +126,11 @@ void setup()
     }
 
     gfx->begin();
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(RGB565_WHITE);
 
     Serial.printf("Enter light sleep in %d seconds\n", AUTOMATICALLY_ENTER_LIGHT_SLEEP_TIME / 1000);
     gfx->setCursor(10, 64);
-    gfx->setTextColor(BLACK);
+    gfx->setTextColor(RGB565_BLACK);
     gfx->printf("Enter light sleep in %d seconds\n", AUTOMATICALLY_ENTER_LIGHT_SLEEP_TIME / 1000);
 
     Sleep_OP.cycletime_1 = millis() + AUTOMATICALLY_ENTER_LIGHT_SLEEP_TIME;
@@ -141,7 +150,7 @@ void loop()
 
         Serial.println("Light Sleep Awakening");
 
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
 
         gfx->setCursor(10, 64);
         gfx->println("Light Sleep Awakening");
@@ -150,7 +159,7 @@ void loop()
 
         Serial.printf("Return to sleep in %d seconds\n", AUTOMATICALLY_ENTER_LIGHT_SLEEP_TIME / 1000);
 
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
 
         gfx->setCursor(10, 64);
         gfx->printf("Return to sleep in %d seconds\n", AUTOMATICALLY_ENTER_LIGHT_SLEEP_TIME / 1000);
@@ -162,7 +171,7 @@ void loop()
     {
         Serial.println("Enter light sleep");
 
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
 
         gfx->setCursor(10, 64);
         gfx->println("Enter light sleep");

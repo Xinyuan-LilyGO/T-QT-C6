@@ -13,6 +13,7 @@
  * @License: GPL 3.0
  */
 #include "Arduino_DriveBus_Library.h"
+#include "cpp_bus_driver_library.h"
 #include "Arduino_GFX_Library.h"
 #include <math.h>
 #include "pin_config.h"
@@ -39,8 +40,12 @@ std::unique_ptr<Arduino_IIC> LSM6DSL(new Arduino_LSM6DSL(IIC_Bus, LSM6DSL_DEVICE
 std::unique_ptr<Arduino_IIC> ETA4662(new Arduino_ETA4662(IIC_Bus, ETA4662_DEVICE_ADDRESS,
                                                          DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
 
-std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
-                                                           DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> CPP_IIC_Master_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(IIC_SDA, IIC_SCL);
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> SGM41562_IIC_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(CPP_IIC_Master_Bus);
+std::unique_ptr<cpp_bus_driver::Sgm41562xx> SGM41562(
+    new cpp_bus_driver::Sgm41562xx(SGM41562_IIC_Bus));
 
 Arduino_DataBus *bus = new Arduino_HWSPI(
     LCD_DC /* DC */, LCD_CS /* CS */, LCD_SCLK /* SCK */, LCD_MOSI /* MOSI */, -1 /* MISO */); // Software SPI
@@ -56,11 +61,15 @@ void setup()
     Serial.begin(115200);
     Serial.println("Ciallo");
 
+    i2c_master_bus_handle_t sgm41562_bus_handle = nullptr;
     if (ETA4662->begin() == true)
     {
         Serial.println("ETA4662 initialization successfully");
     }
-    else if (SGM41562->begin() == true)
+    else if (i2c_master_get_bus_handle(
+                 I2C_NUM_0, &sgm41562_bus_handle) == ESP_OK &&
+             CPP_IIC_Master_Bus->set_bus_handle(sgm41562_bus_handle) &&
+             SGM41562->Init())
     {
         Serial.println("SGM41562 initialization successfully");
     }
@@ -94,12 +103,12 @@ void setup()
     ledcWrite(LCD_BL, 0); // 开启屏幕
 
     gfx->begin();
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(RGB565_WHITE);
 
     while (LSM6DSL->begin() == false)
     {
         Serial.println("LSM6DSL initialization fail");
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
         gfx->setCursor(10, 64);
         gfx->println("LSM6DSL initialization fail");
         delay(2000);
@@ -122,7 +131,7 @@ void setup()
 
     Serial.printf("\nStart calibrating the gyroscope and accelerometer\n");
     gfx->setCursor(10, 60);
-    gfx->setTextColor(RED);
+    gfx->setTextColor(RGB565_RED);
     gfx->printf("Start calibrating the gyroscope and accelerometer");
     delay(1000);
     // 将器件静止后再校正陀螺仪传感器
@@ -132,16 +141,16 @@ void setup()
         Serial.printf("\nLSM6DSL gyroscope correction fail\n");
         Serial.printf("Please ensure that the device is in a stationary state!\n\n");
 
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
         gfx->setCursor(10, 60);
-        gfx->setTextColor(RED);
+        gfx->setTextColor(RGB565_RED);
         gfx->printf("LSM6DSL gyroscope correction fail\nPlease ensure that the device is in a stationary state!");
         delay(1000);
     }
     Serial.printf("LSM6DSL gyroscope correction successfully\n");
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(RGB565_WHITE);
     gfx->setCursor(10, 60);
-    gfx->setTextColor(RED);
+    gfx->setTextColor(RGB565_RED);
     gfx->printf("LSM6DSL gyroscope correction successfully");
     // 将器件正放静止后再校正加速度传感器
     // 最好在陀螺仪校正后立即进行加速度校正
@@ -150,22 +159,22 @@ void setup()
     {
         Serial.printf("\nLSM6DSL acceleration correction fail\n");
         Serial.printf("Please ensure that the device is in a stationary state!\n\n");
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
         gfx->setCursor(10, 60);
-        gfx->setTextColor(RED);
+        gfx->setTextColor(RGB565_RED);
         gfx->printf("LSM6DSL acceleration correction fail\nPlease ensure that the device is in a stationary state!");
         delay(1000);
     }
     Serial.printf("LSM6DSL acceleration correction successfully\n\n");
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(RGB565_WHITE);
     gfx->setCursor(10, 60);
-    gfx->setTextColor(RED);
+    gfx->setTextColor(RGB565_RED);
     gfx->printf("LSM6DSL acceleration correction successfully");
     delay(1000);
 
-    gfx->fillScreen(WHITE);
-    gfx->drawRect(14, 0, 100, 100, RED);
-    gfx->fillCircle(64, 50, 3, RED);
+    gfx->fillScreen(RGB565_WHITE);
+    gfx->drawRect(14, 0, 100, 100, RGB565_RED);
+    gfx->fillCircle(64, 50, 3, RGB565_RED);
 }
 void loop()
 {
@@ -195,10 +204,10 @@ void loop()
         {
             roll = -90 - (roll + 90);
         }
-        gfx->fillRect(14 + 1, 0 + 1, 100 - 2, 100 - 2, WHITE);
-        gfx->fillCircle(64, 50, 2, RED);
+        gfx->fillRect(14 + 1, 0 + 1, 100 - 2, 100 - 2, RGB565_WHITE);
+        gfx->fillCircle(64, 50, 2, RGB565_RED);
         gfx->drawCircle(64 + (pitch * ((50.0 - 5.0 - 1.0) / 90.0)),
-                        50 + (roll * ((50.0 - 5.0 - 1.0) / 90.0)), 5, ORANGE);
+                        50 + (roll * ((50.0 - 5.0 - 1.0) / 90.0)), 5, RGB565_ORANGE);
 
         CycleTime1 = millis() + 10;
     }
@@ -206,8 +215,8 @@ void loop()
     if (millis() > CycleTime2)
     {
         Serial.printf("%.6f,%.6f,%.6f,%.6f\n", (float)-200, (float)200, roll, pitch);
-        gfx->fillRect(0, 102, 128, 26, WHITE);
-        gfx->setTextColor(RED);
+        gfx->fillRect(0, 102, 128, 26, RGB565_WHITE);
+        gfx->setTextColor(RGB565_RED);
 
         gfx->setCursor(22, 107);
         gfx->printf("%.3f , %.3f", roll, pitch);

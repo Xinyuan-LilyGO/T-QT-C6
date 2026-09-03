@@ -156,15 +156,15 @@ void setup()
     ledcWrite(LCD_BL, 255); // 关闭屏幕
 
     gfx->begin();
-    gfx->fillScreen(BLACK);
+    gfx->fillScreen(RGB565_BLACK);
 
     while (ETA4662->begin() == false)
     {
         Serial.println("ETA4662 initialization fail");
 
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
         gfx->setCursor(10, 60);
-        gfx->setTextColor(BLACK);
+        gfx->setTextColor(RGB565_BLACK);
         gfx->println("ETA4662 initialization fail");
 
         ledcWrite(LCD_BL, 0);

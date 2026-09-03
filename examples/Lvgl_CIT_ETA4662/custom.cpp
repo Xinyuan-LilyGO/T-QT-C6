@@ -365,10 +365,10 @@ void Window_IMU_Test_Initialization()
     LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_GYROSCOPE_SENSITIVITY,
                                     2000);
 
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(RGB565_WHITE);
     Serial.printf("\nStart calibrating the gyroscope and accelerometer\n");
     gfx->setCursor(10, 60);
-    gfx->setTextColor(RED);
+    gfx->setTextColor(RGB565_RED);
     gfx->printf("Start calibrating the gyroscope and accelerometer");
     delay(1000);
     // 将器件静止后再校正陀螺仪传感器
@@ -378,18 +378,18 @@ void Window_IMU_Test_Initialization()
         Serial.printf("\nLSM6DSL gyroscope correction fail\n");
         Serial.printf("Please ensure that the device is in a stationary state!\n\n");
 
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
         gfx->setCursor(10, 60);
-        gfx->setTextColor(RED);
+        gfx->setTextColor(RGB565_RED);
         gfx->printf("LSM6DSL gyroscope correction fail\nPlease ensure that the device is in a stationary state!");
         delay(1000);
     }
     else
     {
         Serial.printf("LSM6DSL gyroscope correction successfully\n");
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
         gfx->setCursor(10, 60);
-        gfx->setTextColor(RED);
+        gfx->setTextColor(RGB565_RED);
         gfx->printf("LSM6DSL gyroscope correction successfully");
 
         // 将器件正放静止后再校正加速度传感器
@@ -399,24 +399,24 @@ void Window_IMU_Test_Initialization()
         {
             Serial.printf("\nLSM6DSL acceleration correction fail\n");
             Serial.printf("Please ensure that the device is in a stationary state!\n\n");
-            gfx->fillScreen(WHITE);
+            gfx->fillScreen(RGB565_WHITE);
             gfx->setCursor(10, 60);
-            gfx->setTextColor(RED);
+            gfx->setTextColor(RGB565_RED);
             gfx->printf("LSM6DSL acceleration correction fail\nPlease ensure that the device is in a stationary state!");
             delay(1000);
         }
         else
         {
             Serial.printf("LSM6DSL acceleration correction successfully\n\n");
-            gfx->fillScreen(WHITE);
+            gfx->fillScreen(RGB565_WHITE);
             gfx->setCursor(10, 60);
-            gfx->setTextColor(RED);
+            gfx->setTextColor(RGB565_RED);
             gfx->printf("LSM6DSL acceleration correction successfully");
             delay(1000);
 
-            gfx->fillScreen(WHITE);
-            // gfx->drawRect(14, 0, 100, 100, RED);
-            // gfx->fillCircle(64, 50, 3, RED);
+            gfx->fillScreen(RGB565_WHITE);
+            // gfx->drawRect(14, 0, 100, 100, RGB565_RED);
+            // gfx->fillCircle(64, 50, 3, RGB565_RED);
 
             CIT_UI.Window_Initialization_Flag = true;
         }
@@ -453,11 +453,11 @@ void Window_LCD_Display_Color_Test_Loop(void)
     {
         CIT_UI.Window_Button_Start_Testing_Flag = false;
 
-        gfx->fillScreen(RED);
+        gfx->fillScreen(RGB565_RED);
         delay(3000);
-        gfx->fillScreen(GREEN);
+        gfx->fillScreen(RGB565_LIME);
         delay(3000);
-        gfx->fillScreen(BLUE);
+        gfx->fillScreen(RGB565_BLUE);
         delay(3000);
         gfx->draw16bitRGBBitmap(0, 0, (uint16_t *)gImage_1, 128, 128);
         delay(3000);
@@ -939,10 +939,10 @@ void Window_IMU_Test_Loop(void)
     {
         roll = -90 - (roll + 90);
     }
-    gfx->fillRect(14 + 1, 0 + 1, 100 - 2, 100 - 2, WHITE);
-    gfx->fillCircle(64, 50, 2, RED);
+    gfx->fillRect(14 + 1, 0 + 1, 100 - 2, 100 - 2, RGB565_WHITE);
+    gfx->fillCircle(64, 50, 2, RGB565_RED);
     gfx->drawCircle(64 + (pitch * ((50.0 - 5.0 - 1.0) / 90.0)),
-                    50 + (roll * ((50.0 - 5.0 - 1.0) / 90.0)), 5, ORANGE);
+                    50 + (roll * ((50.0 - 5.0 - 1.0) / 90.0)), 5, RGB565_ORANGE);
 
     String Battery_Status = ETA4662->IIC_Read_Device_State(ETA4662->Arduino_IIC_Power::Status_Information::POWER_BATTERY_FAULT_STATUS);
     uint32_t Battery_Voltage = 0;
@@ -973,8 +973,8 @@ void Window_IMU_Test_Loop(void)
     }
 
     Serial.printf("%.6f,%.6f,%.6f,%.6f\n", (float)-200, (float)200, roll, pitch);
-    gfx->fillRect(0, 102, 128, 26, WHITE);
-    gfx->setTextColor(RED);
+    gfx->fillRect(0, 102, 128, 26, RGB565_WHITE);
+    gfx->setTextColor(RGB565_RED);
 
     gfx->setCursor(40, 107);
     gfx->printf("BAT:%s mV", (String)Battery_Voltage);

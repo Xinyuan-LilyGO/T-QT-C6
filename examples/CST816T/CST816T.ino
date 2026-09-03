@@ -10,6 +10,7 @@
  */
 #include "Arduino_GFX_Library.h"
 #include "Arduino_DriveBus_Library.h"
+#include "cpp_bus_driver_library.h"
 #include "pin_config.h"
 
 Arduino_DataBus *bus = new Arduino_HWSPI(
@@ -32,8 +33,12 @@ std::unique_ptr<Arduino_IIC> CST816T(new Arduino_CST816x(IIC_Bus, CST816T_DEVICE
 std::unique_ptr<Arduino_IIC> ETA4662(new Arduino_ETA4662(IIC_Bus, ETA4662_DEVICE_ADDRESS,
                                                          DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
 
-std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
-                                                           DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> CPP_IIC_Master_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(IIC_SDA, IIC_SCL);
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> SGM41562_IIC_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(CPP_IIC_Master_Bus);
+std::unique_ptr<cpp_bus_driver::Sgm41562xx> SGM41562(
+    new cpp_bus_driver::Sgm41562xx(SGM41562_IIC_Bus));
 
 void Arduino_IIC_Touch_Interrupt(void)
 {
@@ -45,11 +50,15 @@ void setup()
     Serial.begin(115200);
     Serial.println("Ciallo");
 
+    i2c_master_bus_handle_t sgm41562_bus_handle = nullptr;
     if (ETA4662->begin() == true)
     {
         Serial.println("ETA4662 initialization successfully");
     }
-    else if (SGM41562->begin() == true)
+    else if (i2c_master_get_bus_handle(
+                 I2C_NUM_0, &sgm41562_bus_handle) == ESP_OK &&
+             CPP_IIC_Master_Bus->set_bus_handle(sgm41562_bus_handle) &&
+             SGM41562->Init())
     {
         Serial.println("SGM41562 initialization successfully");
     }
@@ -90,9 +99,9 @@ void setup()
     //                                 CST816T->Arduino_IIC_Touch::Device_State::TOUCH_DEVICE_ON);
 
     gfx->begin();
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(RGB565_WHITE);
 
-    gfx->setTextColor(PINK);
+    gfx->setTextColor(RGB565_PINK);
     gfx->setCursor(0, 128 / 2);
 
     while ((int32_t)CST816T->IIC_Device_ID() == -1) // 等待读取到ID
@@ -102,7 +111,7 @@ void setup()
     }
 
     gfx->printf("ID: %#X \n\n", (int32_t)CST816T->IIC_Device_ID());
-    gfx->setTextColor(MAGENTA);
+    gfx->setTextColor(RGB565_MAGENTA);
     delay(1000);
 }
 
@@ -115,7 +124,7 @@ void loop()
         CST816T->IIC_Interrupt_Flag = false;
 
         gfx->setCursor(50, 50);
-        gfx->fillScreen(WHITE);
+        gfx->fillScreen(RGB565_WHITE);
 
         if (CST816T->IIC_Read_Device_State(CST816T->Arduino_IIC_Touch::Status_Information::TOUCH_GESTURE_ID) == "Swipe Up")
         {

@@ -1,144 +1,252 @@
 /*
- * @Description:
-            SGM41562 Example Program
-        When enabling the SGM41562 watchdog, the MCU communicating with SGM41562 will
-    lose power and restart when the watchdog timer reaches the specified value, as the power
-    supply will be disconnected and reconnected.
+ * @Description: SGM41562系列充电芯片完整信息读取示例
  * @Author: LILYGO_L
- * @Date: 2023-11-27 10:08:51
- * @LastEditTime: 2023-12-20 11:55:28
+ * @LastEditTime: 2026-09-03 18:00:00
  * @License: GPL 3.0
  */
-#include "Arduino_DriveBus_Library.h"
+#include <Arduino.h>
+
+#include "cpp_bus_driver_library.h"
 #include "pin_config.h"
 
-std::shared_ptr<Arduino_IIC_DriveBus> IIC_Bus =
-    std::make_shared<Arduino_HWIIC>(IIC_SDA, IIC_SCL, &Wire);
+using cpp_bus_driver::HardwareI2c1;
+using cpp_bus_driver::Sgm41562xx;
 
-std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
-                                                           DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
+std::shared_ptr<HardwareI2c1> g_i2c_bus =
+    std::make_shared<HardwareI2c1>(IIC_SDA, IIC_SCL);
+std::shared_ptr<HardwareI2c1> g_sgm41562_bus =
+    std::make_shared<HardwareI2c1>(g_i2c_bus);
+Sgm41562xx g_sgm41562(g_sgm41562_bus);
 
-void setup()
-{
-    Serial.begin(115200);
-    Serial.println("Ciallo");
-
-    // 呼吸灯
-    pinMode(BREATHING_LIGHT, OUTPUT);
-    ledcAttach(BREATHING_LIGHT, 2000, 8);
-    ledcWrite(BREATHING_LIGHT, 255); // 关闭呼吸灯
-
-    // 测量电池
-    pinMode(BATTERY_ADC_DATA, INPUT_PULLDOWN);
-    pinMode(BATTERY_MEASUREMENT_CONTROL, OUTPUT);
-    digitalWrite(BATTERY_MEASUREMENT_CONTROL, LOW); // 开启电池电压测量
-    analogReadResolution(12);
-
-    // 屏幕背光
-    pinMode(LCD_BL, OUTPUT);
-    ledcAttach(LCD_BL, 2000, 8);
-    ledcWrite(LCD_BL, 255); // 关闭屏幕
-
-    while (SGM41562->begin() == false)
-    {
-        Serial.println("SGM41562 initialization fail");
-        delay(2000);
-    }
-    Serial.println("SGM41562 initialization successfully");
-
-    // SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-    //                                 SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
-    // SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_WATCHDOG_MODE,
-    //                                 SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON);                 // 看门狗（当启动SGM41562的看门狗时，看门狗的定时器到达指定值后将断开电源重新连接，与SGM41562通信的MCU将重启）
-    // SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_WATCHDOG_TIMER, 80); // 看门狗定时器值
-
-    // 热调节阈值设置为60度
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_THERMAL_REGULATION_THRESHOLD, 60);
-    // 最小输入电压设置为3880mV
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_MINIMUM_INPUT_VOLTAGE_LIMIT, 3880);
-    // 充电目标电压电压设置为4215mV
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_CHARGING_TARGET_VOLTAGE_LIMIT, 4215);
-    // 系统电压设置为4600mV
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_SYSTEM_VOLTAGE_LIMIT, 4600);
-    // 输入电流限制设置为500mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_INPUT_CURRENT_LIMIT, 500);
-    // 快速充电电流限制设置为456mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_FAST_CHARGING_CURRENT_LIMIT, 456);
-    // 终端充电和预充电电流限制设置为5mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT, 5);
-    // BAT到SYS的放电电流限制设置为2200mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_BAT_TO_SYS_DISCHARGE_CURRENT_LIMIT, 2200);
+/**
+ * @brief 输出布尔状态
+ * @param name 状态名称
+ * @param enabled true：输出Enabled，false：输出Disabled
+ */
+void PrintBoolean(const char* name, bool enabled) {
+  Serial.printf("%-46s: %s\n", name, enabled ? "Enabled" : "Disabled");
 }
-void loop()
-{
-    String Battery_Status = SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_BATTERY_FAULT_STATUS);
 
-    Serial.printf("--------------------SGM41562--------------------\n");
-    Serial.printf("System running time: %d\n\n", (uint32_t)millis() / 1000);
-    Serial.printf("IIC_Bus.use_count(): %d\n\n", (int32_t)IIC_Bus.use_count());
+/**
+ * @brief 判断芯片是否采用S/SA扩展寄存器布局
+ * @param chip_type 芯片型号
+ * @return 采用扩展寄存器布局返回true，否则返回false
+ */
+bool HasExtendedRegisterMap(Sgm41562xx::ChipType chip_type) {
+  return chip_type == Sgm41562xx::ChipType::kSgm41562S ||
+         chip_type == Sgm41562xx::ChipType::kSgm41562Sa;
+}
 
-    Serial.printf("ID: %#X \n", (int32_t)SGM41562->IIC_Device_ID());
+/**
+ * @brief 将充电状态转换为字符串
+ * @param charge_status 充电状态
+ * @return 返回充电状态字符串
+ */
+const char* ChargeStatusToString(Sgm41562xx::ChargeStatus charge_status) {
+  switch (charge_status) {
+    case Sgm41562xx::ChargeStatus::kNotCharging:
+      return "Not charging";
+    case Sgm41562xx::ChargeStatus::kPrecharge:
+      return "Precharge";
+    case Sgm41562xx::ChargeStatus::kCharging:
+      return "Charging";
+    case Sgm41562xx::ChargeStatus::kChargeComplete:
+      return "Charge complete";
+    default:
+      return "Unknown";
+  }
+}
 
-    Serial.printf("\nCharging Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_CHARGING_STATUS)).c_str());
-    Serial.printf("Input Source Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_INPUT_SOURCE_STATUS)).c_str());
-    Serial.printf("System Voltage Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_SYSTEM_VOLTAGE_STATUS)).c_str());
-    Serial.printf("Thermal Regulation Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_THERMAL_REGULATION_STATUS)).c_str());
+/**
+ * @brief 输出芯片实时运行状态
+ * @param status 芯片实时运行状态
+ */
+void PrintChipStatus(const Sgm41562xx::ChipStatus& status) {
+  Serial.printf("%-46s: %s\n", "Charge status",
+      ChargeStatusToString(status.charge_status));
+  PrintBoolean("Input power good", status.input_power_good);
+  PrintBoolean(
+      "Power path management active", status.power_path_management_active);
+  PrintBoolean("Thermal regulation active",
+      status.thermal_regulation_active);
+  PrintBoolean("Watchdog expired", status.watchdog_expired);
+}
 
-    Serial.printf("\nWatchdog Fault Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_WATCHDOG_FAULT_STATUS)).c_str());
-    Serial.printf("Input Fault Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_INPUT_FAULT_STATUS)).c_str());
-    Serial.printf("Thermal Shutdown Fault Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_THERMAL_SHUTDOWN_FAULT_STATUS)).c_str());
-    Serial.printf("Battery Fault Status: %s \n", (Battery_Status).c_str());
-    Serial.printf("Safety Timer Fault Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_SAFETY_TIMER_STATUS_FAULT_STATUS)).c_str());
-    Serial.printf("NTC Fault Status: %s \n",
-                  (SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_NTC_FAULT_STATUS)).c_str());
+/**
+ * @brief 输出芯片故障状态
+ * @param status 芯片故障状态
+ */
+void PrintFaultStatus(const Sgm41562xx::FaultStatus& status) {
+  PrintBoolean("Input power fault", status.input_power_fault);
+  PrintBoolean("Thermal shutdown", status.thermal_shutdown);
+  PrintBoolean(
+      "Battery overvoltage fault", status.battery_overvoltage_fault);
+  PrintBoolean("Safety timer expired", status.safety_timer_expired);
+  PrintBoolean("NTC hot", status.ntc_hot);
+  PrintBoolean("NTC cold", status.ntc_cold);
+}
 
-    Serial.printf("\nThermal Regulation Threshold: %d ^C \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_THERMAL_REGULATION_THRESHOLD));
+/**
+ * @brief 输出芯片全部常用充电与保护配置
+ * @param config 芯片充电配置
+ * @param extended true：采用S/SA扩展寄存器布局
+ */
+void PrintChargerConfig(
+    const Sgm41562xx::ChargerConfig& config, bool extended) {
+  Serial.printf("%-46s: 0x%02X\n", "I2C address", config.i2c_address);
+  PrintBoolean("Charge", config.charge_enabled);
+  PrintBoolean("Input high impedance", config.high_impedance_enabled);
+  Serial.printf("%-46s: %u s\n", "nINT battery reset pull-down",
+      config.reset_pull_down_time_s);
+  Serial.printf("%-46s: %u s\n", "Battery FET off time",
+      config.battery_fet_off_time_s);
+  Serial.printf("%-46s: %u mV\n", "Battery UVLO threshold",
+      config.battery_undervoltage_threshold_mv);
+  Serial.printf("%-46s: %u mV\n", "Minimum input voltage",
+      config.minimum_input_voltage_limit_mv);
+  Serial.printf("%-46s: %u mA\n", "Input current limit",
+      config.input_current_limit_ma);
+  PrintBoolean("Input current limit", config.input_current_limit_enabled);
+  if (!extended) {
+    PrintBoolean("Input current limit additional 200 mA",
+        config.input_current_limit_200_ma_offset_enabled);
+  }
+  Serial.printf("%-46s: %u mA\n", "Fast charge current",
+      config.fast_charge_current_ma);
+  PrintBoolean(
+      "Quarter charge-current scale",
+      config.quarter_charge_current_scale_enabled);
+  if (extended) {
+    Serial.printf("%-46s: %u mA\n", "Precharge current",
+        config.precharge_current_ma);
+    PrintBoolean("Precharge current x6",
+        config.precharge_current_multiplier_six_enabled);
+    PrintBoolean("Termination current x6",
+        config.termination_current_multiplier_six_enabled);
+  }
+  Serial.printf("%-46s: %u mA\n", "Termination current",
+      config.termination_current_ma);
+  Serial.printf("%-46s: %u mA\n", "BAT to SYS discharge current",
+      config.discharge_current_limit_ma);
+  Serial.printf("%-46s: %u mV\n", "Charge regulation voltage",
+      config.charge_voltage_limit_mv);
+  Serial.printf("%-46s: %u mV\n", "Precharge to fast-charge threshold",
+      config.precharge_to_fast_charge_threshold_mv);
+  Serial.printf("%-46s: %u mV\n", "Recharge voltage difference",
+      config.recharge_threshold_mv);
+  PrintBoolean(
+      "Watchdog in discharge", config.watchdog_in_discharge_enabled);
+  PrintBoolean("Watchdog", config.watchdog_enabled);
+  Serial.printf("%-46s: %u s\n", "Watchdog timeout",
+      config.watchdog_timeout_s);
+  PrintBoolean("Charge termination", config.charge_termination_enabled);
+  PrintBoolean("Charge safety timer", config.safety_timer_enabled);
+  Serial.printf("%-46s: %u h\n", "Charge safety timer duration",
+      config.safety_timer_hours);
+  PrintBoolean(
+      "Charge after termination", config.charge_after_termination_enabled);
+  PrintBoolean(
+      "PPM safety timer extension", config.safety_timer_extended_in_ppm);
+  PrintBoolean("NTC", config.ntc_enabled);
+  PrintBoolean("Shipping mode", config.shipping_mode_enabled);
+  Serial.printf("%-46s: %u s\n", "Shipping mode delay",
+      config.shipping_mode_delay_s);
+  PrintBoolean("Input power-good interrupt",
+      config.input_power_good_interrupt_enabled);
+  PrintBoolean(
+      "Charge-complete interrupt", config.charge_complete_interrupt_enabled);
+  PrintBoolean(
+      "Charge-status interrupt", config.charge_status_interrupt_enabled);
+  PrintBoolean("NTC interrupt", config.ntc_interrupt_enabled);
+  PrintBoolean("Battery-overvoltage interrupt",
+      config.battery_overvoltage_interrupt_enabled);
+  PrintBoolean("Input voltage loop", config.input_voltage_loop_enabled);
+  PrintBoolean("PCB overtemperature protection",
+      config.pcb_overtemperature_protection_enabled);
+  Serial.printf("%-46s: %u C\n", "Thermal regulation threshold",
+      config.thermal_regulation_threshold_c);
+  Serial.printf("%-46s: %u mV\n", "System regulation voltage",
+      config.system_voltage_regulation_mv);
+  Serial.printf("%-46s: %u mV\n", "Input overvoltage threshold",
+      config.input_overvoltage_threshold_mv);
+  PrintBoolean(
+      "Forced power-path switch", config.force_power_path_switch_enabled);
+  PrintBoolean("Battery power", config.battery_power_enabled);
+  PrintBoolean("Input overvoltage protection",
+      config.input_overvoltage_protection_enabled);
+  if (extended) {
+    Serial.printf("%-46s: %u ms\n", "nINT exit-shipping delay",
+        config.exit_shipping_mode_interrupt_delay_ms);
+    Serial.printf("%-46s: %u ms\n", "VIN exit-shipping delay",
+        config.exit_shipping_mode_input_delay_ms);
+    Serial.printf("%-46s: %u ms\n", "Termination deglitch time",
+        config.termination_deglitch_time_ms);
+    PrintBoolean(
+        "nINT in shipping mode", config.shipping_mode_interrupt_enabled);
+  }
+}
 
-    if (Battery_Status == "Normal") // 开启充电的时候可检测该值从而推断电池是否接入
-    {
-        Serial.printf("\nBattery Voltage: %d mV\n", analogReadMilliVolts(BATTERY_ADC_DATA) * 2);
-    }
-    else
-    {
-        Serial.printf("\nBattery Voltage: 0 mV\n");
-    }
+void setup() {
+  Serial.begin(115200);
 
-    Serial.printf("\nInput Minimum Voltage Limit: %d mV \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_MINIMUM_INPUT_VOLTAGE_LIMIT));
-    Serial.printf("Charging Target Voltage Limit: %d mV \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_CHARGING_TARGET_VOLTAGE_LIMIT));
-    Serial.printf("System Voltage Limit: %d mV \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_SYSTEM_VOLTAGE_LIMIT));
-    Serial.printf("Input Current Limit: %d mA \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_INPUT_CURRENT_LIMIT));
-    Serial.printf("Fast Charge Current Limit: %d mA \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_FAST_CHARGING_CURRENT_LIMIT));
-    Serial.printf("Termination And Precondition Charge Current Limit: %d mA \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT));
-    Serial.printf("BAT To SYS Discharge Current Limit: %d mA \n",
-                  (int32_t)SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_BAT_TO_SYS_DISCHARGE_CURRENT_LIMIT));
+  pinMode(BATTERY_ADC_DATA, INPUT_PULLDOWN);
+  pinMode(BATTERY_MEASUREMENT_CONTROL, OUTPUT);
+  digitalWrite(BATTERY_MEASUREMENT_CONTROL, LOW);
+  analogReadResolution(12);
 
-    Serial.printf("--------------------SGM41562--------------------\n");
+  while (!g_sgm41562.Init()) {
+    Serial.println("SGM41562 initialization failed");
+    delay(2000);
+  }
 
-    for (int i = 255; i > 0; i--)
-    {
-        ledcWrite(BREATHING_LIGHT, i);
-        delay(5);
-    }
-    for (int i = 0; i <= 255; i++)
-    {
-        ledcWrite(BREATHING_LIGHT, i);
-        delay(2);
-    }
+  // 当前硬件使用两线电池，未连接真实NTC温度传感器，因此主动关闭NTC检测。
+  while (!g_sgm41562.SetNtcEnable(false)) {
+    Serial.println("SGM41562 NTC检测关闭失败");
+    delay(2000);
+  }
 
-    delay(1000);
+  Serial.printf("SGM41562 initialization succeeded: %s\n",
+      Sgm41562xx::ChipTypeToString(g_sgm41562.GetChipType()));
+}
+
+void loop() {
+  uint8_t chip_id = 0;
+  Sgm41562xx::ChipStatus chip_status;
+  Sgm41562xx::FaultStatus fault_status;
+  Sgm41562xx::ChargerConfig charger_config;
+
+  const bool chip_id_ok = g_sgm41562.GetChipId(chip_id);
+  const bool chip_status_ok = g_sgm41562.GetChipStatus(chip_status);
+  const bool fault_status_ok = g_sgm41562.GetFaultStatus(fault_status);
+  const bool charger_config_ok =
+      g_sgm41562.GetChargerConfig(charger_config);
+
+  Serial.println();
+  Serial.println("================ SGM41562 ================");
+  Serial.printf("%-46s: %lu s\n", "System uptime",
+      static_cast<unsigned long>(millis() / 1000));
+  Serial.printf("%-46s: %u mV\n", "Battery voltage (board ADC)",
+      analogReadMilliVolts(BATTERY_ADC_DATA) * 2);
+  Serial.printf("%-46s: %s\n", "Chip type",
+      Sgm41562xx::ChipTypeToString(g_sgm41562.GetChipType()));
+  if (chip_id_ok) {
+    Serial.printf("%-46s: 0x%02X\n", "Chip ID", chip_id);
+  }
+  if (chip_status_ok) {
+    PrintChipStatus(chip_status);
+  }
+  if (fault_status_ok) {
+    PrintFaultStatus(fault_status);
+  }
+  if (charger_config_ok) {
+    PrintChargerConfig(charger_config,
+        HasExtendedRegisterMap(g_sgm41562.GetChipType()));
+  }
+  if (!chip_id_ok || !chip_status_ok || !fault_status_ok ||
+      !charger_config_ok) {
+    Serial.println("One or more SGM41562 register reads failed");
+  }
+  Serial.println("============================================");
+
+  delay(2000);
 }

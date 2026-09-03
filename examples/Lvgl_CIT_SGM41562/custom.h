@@ -11,6 +11,7 @@
 
 #include "gui_guider.h"
 #include "Arduino_DriveBus_Library.h"
+#include "cpp_bus_driver_library.h"
 #include "Arduino_GFX_Library.h"
 #include "pin_config.h"
 
@@ -87,5 +88,5 @@ void custom_init(lv_ui *ui);
 extern Lvgl_CIT_UI CIT_UI;
 extern Arduino_GFX *gfx;
 extern std::unique_ptr<Arduino_IIC> CST816T;
-extern std::unique_ptr<Arduino_IIC> SGM41562;
+extern std::unique_ptr<cpp_bus_driver::Sgm41562xx> SGM41562;
 extern std::unique_ptr<Arduino_IIC> LSM6DSL;

@@ -256,8 +256,7 @@ static void Test_event_handler(lv_event_t *e)
             switch (CIT_UI.Window_Current_State)
             {
             case CIT_UI.Window_Current_State::Window_Power_Test:
-                SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                                 SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+                SGM41562->SetChargeEnable(false);
                 break;
             case CIT_UI.Window_Current_State::Window_BREATHING_LIGHT_Test:
                 CIT_UI.BREATHING_LIGHT_Brightness = 0;
@@ -307,8 +306,7 @@ static void Test_event_handler(lv_event_t *e)
             switch (CIT_UI.Window_Current_State)
             {
             case CIT_UI.Window_Current_State::Window_Power_Test:
-                SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                                 SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+                SGM41562->SetChargeEnable(false);
                 break;
             case CIT_UI.Window_Current_State::Window_BREATHING_LIGHT_Test:
                 CIT_UI.BREATHING_LIGHT_Brightness = 0;
@@ -382,8 +380,7 @@ static void Test_btnm_1_event_handler(lv_event_t *e)
                 break;
             case CIT_UI.Window_Current_State::Window_Power_Test:
 
-                SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                                 SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+                SGM41562->SetChargeEnable(false);
 
                 CIT_UI.Window_Power_Test_Result = CIT_UI.Window_Test_Result::Test_Pass;
                 break;
@@ -435,8 +432,7 @@ static void Test_btnm_1_event_handler(lv_event_t *e)
                 break;
             case CIT_UI.Window_Current_State::Window_Power_Test:
 
-                SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                                 SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+                SGM41562->SetChargeEnable(false);
 
                 CIT_UI.Window_Power_Test_Result = CIT_UI.Window_Test_Result::Test_Fail;
                 break;

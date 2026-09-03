@@ -32,8 +32,12 @@ void Arduino_IIC_Touch_Interrupt(void);
 
 std::unique_ptr<Arduino_IIC> CST816T(new Arduino_CST816x(IIC_Bus, CST816T_DEVICE_ADDRESS,
                                                          TP_RST, TP_INT, Arduino_IIC_Touch_Interrupt));
-std::unique_ptr<Arduino_IIC> SGM41562(new Arduino_SGM41562(IIC_Bus, SGM41562_DEVICE_ADDRESS,
-                                                           DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> CPP_IIC_Master_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(IIC_SDA, IIC_SCL);
+std::shared_ptr<cpp_bus_driver::HardwareI2c1> SGM41562_IIC_Bus =
+    std::make_shared<cpp_bus_driver::HardwareI2c1>(CPP_IIC_Master_Bus);
+std::unique_ptr<cpp_bus_driver::Sgm41562xx> SGM41562(
+    new cpp_bus_driver::Sgm41562xx(SGM41562_IIC_Bus));
 std::unique_ptr<Arduino_IIC> LSM6DSL(new Arduino_LSM6DSL(IIC_Bus, LSM6DSL_DEVICE_ADDRESS,
                                                          DRIVEBUS_DEFAULT_VALUE, DRIVEBUS_DEFAULT_VALUE));
 
@@ -156,7 +160,14 @@ void setup()
     ledcAttach(LCD_BL, 20000, 8);
     ledcWrite(LCD_BL, 255); // 关闭屏幕
 
-    if (SGM41562->begin() == false)
+    // CST816T和LSM6DSL仍使用Wire，将其ESP-IDF总线句柄显式注入主总线对象。
+    const bool wire_init_result = Wire.begin(IIC_SDA, IIC_SCL);
+    i2c_master_bus_handle_t sgm41562_bus_handle = nullptr;
+    if (!wire_init_result ||
+        i2c_master_get_bus_handle(
+            I2C_NUM_0, &sgm41562_bus_handle) != ESP_OK ||
+        !CPP_IIC_Master_Bus->set_bus_handle(sgm41562_bus_handle) ||
+        !SGM41562->Init())
     {
         Serial.println("SGM41562 initialization fail");
         delay(2000);
@@ -165,26 +176,6 @@ void setup()
     {
         Serial.println("SGM41562 initialization successfully");
     }
-
-    SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                    SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
-
-    // 热调节阈值设置为120度
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_THERMAL_REGULATION_THRESHOLD, 120);
-    // 最小输入电压设置为3880mV
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_MINIMUM_INPUT_VOLTAGE_LIMIT, 3880);
-    // 充电目标电压电压设置为4215mV
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_CHARGING_TARGET_VOLTAGE_LIMIT, 4215);
-    // 系统电压设置为4600mV
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_SYSTEM_VOLTAGE_LIMIT, 4600);
-    // 输入电流限制设置为500mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_INPUT_CURRENT_LIMIT, 500);
-    // 快速充电电流限制设置为456mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_FAST_CHARGING_CURRENT_LIMIT, 456);
-    // 终端充电和预充电电流限制设置为5mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT, 5);
-    // BAT到SYS的放电电流限制设置为2200mA
-    SGM41562->IIC_Write_Device_Value(SGM41562->Arduino_IIC_Power::Device_Value::POWER_DEVICE_BAT_TO_SYS_DISCHARGE_CURRENT_LIMIT, 2200);
 
     if (CST816T->begin() == false)
     {
@@ -221,7 +212,7 @@ void setup()
     }
 
     gfx->begin();
-    gfx->fillScreen(BLACK);
+    gfx->fillScreen(RGB565_BLACK);
 
     lvgl_initialization();
 

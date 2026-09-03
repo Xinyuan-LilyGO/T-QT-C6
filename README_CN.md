@@ -1,291 +1,221 @@
-<!--
- * @Description: None
- * @version: V1.0.0
- * @Author: LILYGO_L
- * @Date: 2023-09-11 16:13:14
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2026-08-14 14:58:50
- * @License: GPL 3.0
--->
+<h1 align="center">T-QT-C6</h1>
 
-<h1 align = "center">T-QT-C6</h1>
+## **[English](./README.md)** | 中文
 
-<p align="center" width="100%">
-    <img src="image/14.jpg" alt="">
+[![License](https://img.shields.io/github/license/Xinyuan-LilyGO/T-QT-C6?style=flat-square)](./LICENSE)
+[![Arduino](https://img.shields.io/badge/Arduino-IDE-00979D?style=flat-square&logo=arduino&logoColor=white)](https://www.arduino.cc/en/software)
+[![PlatformIO](https://img.shields.io/badge/PlatformIO-supported-F5822A?style=flat-square&logo=platformio&logoColor=white)](https://platformio.org/)
+
+<p align="center">
+  <img src="image/14.jpg" alt="T-QT-C6" width="70%">
 </p>
 
-<p> 
-  <!-- <a href="https://code.visualstudio.com/"> <img src="badges/VisualStudioCode_badge.png" height="25px" alt="VisualStudioCode_badge" /> </a>
-  <a href="https://platformio.org/"> <img src="badges/PlatformIO_badge.png" height="25px" alt="PlatformIO_badge" /> </a> -->
-  <a href="https://www.arduino.cc/"> <img src="badges/Arduino_badge.png" height="25px" alt="Arduino_badge"></a>
-</p> 
+## 概述
 
-## **[English](./README.md) | 中文**
+T-QT-C6 是一款基于 ESP32-C6 的迷你开发板，集成 0.85 英寸 128 × 128 LCD、电容触摸、电池电压检测、充电管理和 RGB 呼吸灯。可选电池背板提供电池接口和 LSM6DSL 惯性传感器。
 
-## 版本迭代:
-| Version       | Update date   |Update description|
-| :----------------: | :--------------: |:--------------: |
-| T-QT-C6_MCU_V1.0       | 2023-12-20      |初始版本      |
-| T-QT-C6_MCU_V1.1     | 2024-03-27         |新增对电池背板的支持      |
-| T-QT-C6_MCU_V1.2      | 2024-06-13        |修改电源管理芯片为SGM41562|
-| T-QT-C6_Battery_V1.2      | 2025-08-11   |修改背板引脚，改用2pin、1.25mm间距引脚座子连接电池，提高系统稳定性|
-
-## 购买链接
-
-| Product                     | SOC           |  FLASH  |  PSRAM   | Link                   |
-| :------------------------: | :-----------: |:-------: | :---------: | :------------------: |
-| T-QT-C6_V1.0-V1.2   | ESP32C6 |   4M   | -| [LILYGO Mall](https://lilygo.cc/products/t-qt-c6?_pos=1&_sid=543d51cdd&_ss=r) |
+[前往 LILYGO 商城购买](https://lilygo.cc/products/t-qt-c6)
 
 ## 目录
-- [描述](#描述)
-- [预览](#预览)
-- [模块](#模块)
+
+- [硬件版本](#硬件版本)
+- [使用说明](#使用说明)
+- [产品预览](#产品预览)
+- [支持的开发环境](#支持的开发环境)
 - [快速开始](#快速开始)
+- [示例程序](#示例程序)
+- [预编译固件](#预编译固件)
+- [硬件模块](#硬件模块)
 - [引脚总览](#引脚总览)
-- [相关测试](#相关测试)
+- [功耗数据](#功耗数据)
+- [项目资料](#项目资料)
 - [常见问题](#常见问题)
-- [项目](#项目)
-- [资料](#资料)
-- [依赖库](#依赖库)
 
-## 描述
+## 硬件版本
 
-T-QT-C6是一款大小只有两个拇指头大小的基于ESP32C6芯片开发的迷你开发板，拥有一块128x128px像素的TFT全彩触摸屏幕，有独立的充电提示灯，有独立电池，与电源路径管理芯片进行通信可以修改电源总线状态和限制值，主芯片进入light_sleep模式，测量电池处的静态电流只有500uA左右，在deep_sleep模式下还可以达到100uA的极低功耗
+| 版本 | 发布日期 | 主要变更 |
+| :-- | :-- | :-- |
+| T-QT-C6 V1.0 | 2023-12-20 | 初始版本 |
+| T-QT-C6 V1.1 | 2024-03-27 | 新增电池背板支持 |
+| T-QT-C6 V1.2 | 2024-06-13 | 充电芯片更换为 SGM41562 |
+| T-QT-C6 Battery V1.2 | 2025-08-11 | 电池接口更换为 2Pin、1.25 mm 间距连接器 |
 
-新更新的T-QT-C6_V1.1-V1.2增加了电池底板供电和惯性传感器，添加的惯性传感器支持步数计数，姿态检测等功能
+## 使用说明
 
-## 预览
+- 请在 [`libraries/common/pin_config.h`](./libraries/common/pin_config.h) 中选择实际连接的电池背板版本，默认配置为 `T_QT_C6_Battery_V1_2`。
+- Battery V1.2 使用双线电池接口，仅连接 VBAT 和 GND，没有连接外部 NTC 热敏电阻，因此 SGM41562 应用示例会主动关闭外部 NTC 检测。
+- `Arduino_GFX` 和 `cpp_bus_driver` 使用 Git 子模块管理。编译前请递归克隆仓库或手动初始化子模块。
+- 工厂测试示例必须与 MCU 板载充电芯片匹配：MCU V1.0/V1.1 使用 `Lvgl_CIT_ETA4662`，MCU V1.2 使用 `Lvgl_CIT_SGM41562`。
 
-### 实物图
+## 产品预览
 
-<p align="center" width="100%">
-    <img src="image/14.jpg" alt="">
+<p align="center">
+  <img src="image/14.jpg" alt="T-QT-C6 正面" width="30%">
+  <img src="image/15.jpg" alt="T-QT-C6 侧面" width="30%">
+  <img src="image/16.jpg" alt="T-QT-C6 背面" width="30%">
 </p>
 
----
+## 支持的开发环境
 
-<p align="center" width="100%">
-    <img src="image/15.jpg" alt="">
-</p>
+| 开发环境 | 状态 | 配置来源 |
+| :-- | :--: | :-- |
+| Arduino IDE | 支持 | 使用 [`platformio.ini`](./platformio.ini) 中注明的 Arduino-ESP32 版本 |
+| PlatformIO | 推荐 | 使用仓库提供的 [`platformio.ini`](./platformio.ini) |
 
----
-
-<p align="center" width="100%">
-    <img src="image/16.jpg" alt="">
-</p>
-
-## 模块
-
-### 1. MCU
-
-* 模块：ESP32-C6-MINI-1U
-* 芯片：ESP32-C6-FH4
-* PSRAM：4M 
-* FLASH：-
-* 其他说明：更多资料请访问[乐鑫官方ESP32-C6-MINI-1U数据手册](https://www.espressif.com/sites/default/files/documentation/esp32-c6-mini-1_mini-1u_datasheet_en.pdf)
-
-### 2. 屏幕
-
-* 屏幕型号：N085-1212TBWIG06-C08
-* 尺寸：0.85英寸
-* 分辨率：128x128px
-* 屏幕类型：TFT
-* 驱动芯片：GC9107
-* 使用总线通信协议：标准SPI
-
-### 3. 触摸芯片
-
-* 芯片：CST816T
-* 总线通信协议：IIC
-* 其他说明：支持上滑、下滑、左滑、右滑、双击、单击、长按手势触发，还有多种中断触发方式结合一体，默认情况下无触摸几秒后自动进入睡眠省电模式
-
-### 4. 电源管理芯片
-
-> #### T-QT-C6_V1.0-V1.1
-> * 芯片：ETA4662
-> * 总线通信协议：IIC
-> * 其他说明：具有电源路径管理的芯片，自动识别电池电源和USB电源，在无电池插入时候自动切换为USB供电，在无USB供电时候自动切换为电池供电
-
-> #### T-QT-C6_V1.2
-> * 芯片：SGM41562
-> * 总线通信协议：IIC
-> * 其他说明：具有电源路径管理的芯片，自动识别电池电源和USB电源，在无电池插入时候自动切换为USB供电，在无USB供电时候自动切换为电池供电
-
-### 5. 电池背板惯性传感器
-
-> #### T-QT-C6_V1.1-V1.2
-> * 芯片：LSM6DSLTR
-> * 总线通信协议：IIC
-> * 其他说明：6轴传感器，支持步数计数，姿态检测等
+框架版本、开发板目标、Flash 分区、USB CDC 和编译环境统一在 [`platformio.ini`](./platformio.ini) 中维护，作为项目配置的唯一来源。
 
 ## 快速开始
 
-### 注意事项：目前ESP32C6只能使用Arduino IDE进行编程
+### 获取源码
 
-### 示例支持
+克隆项目及其子模块：
 
-| Example | Support IDE And Version| Description | Picture |
-| ------  | ------  | ------ | ------ | 
-| [Battery_Voltage](./examples/Battery_Voltage) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [Breathing_Light](./examples/BREATHING_LIGHT) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [ChipScan](./examples/ChipScan) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [CST816T](./examples/CST816T) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [Deep_Sleep](./examples/Deep_Sleep) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [Light_Sleep](./examples/Light_Sleep) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [ETA4662](./examples/ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [GFX](./examples/GFX) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [IMU](./examples/IMU) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [IMU_Level](./examples/IMU_Level) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [SGM41562](./examples/SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
-| [Lvgl_CIT_ETA4662](./examples/Lvgl_CIT_ETA4662) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | 出厂初始测试文件 |  |
-| [Lvgl_CIT_SGM41562](./examples/Lvgl_CIT_SGM41562) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` | 出厂初始测试文件 |  |
-| [Light_Sleep_Wakeup](./examples/Light_Sleep_Wakeup) | `[Arduino IDE][arduino-esp32-libs_v3.0.2]` |  |  |
+```bash
+git clone --recursive https://github.com/Xinyuan-LilyGO/T-QT-C6.git
+cd T-QT-C6
+```
 
-| Firmware | Description | Picture |
-| ------  | ------  | ------ |
-| [Lvgl_CIT_ETA4662](./firmware/[TQT-C6_V1.0-V1.1][Lvgl_CIT_ETA4662]_firmware_V1.0.0.bin) | 出厂初始测试文件 |  |
-| [Lvgl_CIT_SGM41562](./firmware/[TQT-C6_V1.2][Lvgl_CIT_SGM41562]_firmware_V1.0.1.bin) | 出厂初始测试文件 |  |
+如果已经克隆过项目，请执行以下命令初始化子模块：
+
+```bash
+git submodule update --init --recursive
+```
 
 ### PlatformIO
-1. 安装[VisualStudioCode](https://code.visualstudio.com/Download)，根据你的系统类型选择安装。
 
-2. 打开VisualStudioCode软件侧边栏的“扩展”（或者使用<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>打开扩展），搜索“PlatformIO IDE”扩展并下载。
+1. 安装 [Visual Studio Code](https://code.visualstudio.com/) 和 [PlatformIO IDE 扩展](https://platformio.org/install/ide?install=vscode)。
 
-3. 在安装扩展的期间，你可以前往GitHub下载程序，你可以通过点击带绿色字样的“<> Code”下载主分支程序，也通过侧边栏下载“Releases”版本程序。
+2. 打开 [`platformio.ini`](./platformio.ini)，将 `default_envs` 设置为需要使用的示例，例如：
 
-4. 扩展安装完成后，打开侧边栏的资源管理器（或者使用<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd>打开），点击“打开文件夹”，找到刚刚你下载的项目代码（整个文件夹），点击“添加”，此时项目文件就添加到你的工作区了。
+   ```ini
+   [platformio]
+   default_envs = GFX
+   ```
 
-5. 打开项目文件中的“platformio.ini”（添加文件夹成功后PlatformIO会自动打开对应文件夹的“platformio.ini”）,在“[platformio]”目录下取消注释选择你需要烧录的示例程序（以“default_envs = xxx”为标头），然后点击左下角的“<kbd>[√](image/4.png)</kbd>”进行编译，如果编译无误，将单片机连接电脑，点击左下角“<kbd>[→](image/5.png)</kbd>”即可进行烧录。
+3. 编译、上传并打开串口监视器：
 
-### Arduino
-1. 安装[Arduino](https://www.arduino.cc/en/software)，根据你的系统类型选择安装。
+   ```bash
+   pio run
+   pio run -t upload
+   pio device monitor -b 115200
+   ```
 
-2. 打开项目文件夹的“example”目录，选择示例项目文件夹，打开以“.ino”结尾的文件即可打开Arduino IDE项目工作区。
+示例源码目录由 `default_envs` 动态生成，因此所选环境必须与 `default_envs` 保持一致。
 
-3. 打开右上角“工具”菜单栏->选择“开发板”->“开发板管理器”，找到或者搜索“esp32”，下载作者名为“Espressif Systems”的开发板文件。接着返回“开发板”菜单栏，选择“ESP32 Arduino”开发板下的开发板类型，选择的开发板类型由“platformio.ini”文件中以[env]目录下的“board = xxx”标头为准，如果没有对应的开发板，则需要自己手动添加项目文件夹下“board”目录下的开发板。
+### Arduino IDE
 
-4. 打开菜单栏“[文件](image/6.png)”->“[首选项](image/6.png)”，找到“[项目文件夹位置](image/7.png)”这一栏，将项目目录下的“libraries”文件夹里的所有库文件连带文件夹复制粘贴到这个目录下的“libraries”里边。
+1. 将本仓库 [`libraries/`](./libraries) 目录下的所有库文件夹复制到 Arduino Sketchbook 的 `libraries` 目录。Sketchbook 路径可在 **Arduino IDE > 文件 > 首选项** 中查看；Windows 默认目标路径通常为 `Documents\Arduino\libraries`。
 
-5. 在 "工具 "菜单中选择正确的设置，如下表所示。
+2. 打开所需示例目录中的 `.ino` 文件。
 
-| Setting                               | Value                                 |
-| :-------------------------------: | :-------------------------------: |
-| Board                                | ESP32C6 Dev Module            |
-| Upload Speed                     | 921600                               |
-| CPU Frequency                   | 160MHz                              |
-| Flash Mode                         | QIO                                   |
-| Flash Size                           | 4MB (32Mb)                     |
-| Core Debug Level                | None                                 |
-| Partition Scheme                | Huge APP (3MB No OTA/1MB SPIFFS)                                 |
+3. 使用以下 Arduino IDE 开发板配置：
 
-6. 选择正确的端口。
+| 设置 | 配置值 |
+| :-- | :-- |
+| Board | ESP32C6 Dev Module |
+| Upload Speed | 921600 |
+| CPU Frequency | 160MHz |
+| Flash Mode | QIO |
+| Flash Size | 4MB (32Mb) |
+| Core Debug Level | None |
+| Partition Scheme | Huge APP (3MB No OTA/1MB SPIFFS) |
 
-7. 点击右上角“<kbd>[√](image/8.png)</kbd>”进行编译，如果编译无误，将单片机连接电脑，点击右上角“<kbd>[→](image/9.png)</kbd>”即可进行烧录。
+### 示例程序
 
-### firmware烧录
-1. 打开项目文件“tools”找到ESP32烧录工具，打开。
+| 示例链接 | 说明 |
+| :-- | :-- |
+| [`examples/`](./examples) | 当前 T-QT-C6 示例源码 |
 
-2. 选择正确的烧录芯片以及烧录方式点击“OK”，如图所示根据步骤1->2->3->4->5即可烧录程序，如果烧录不成功，请按住“BOOT-0”键再下载烧录。
+请打开示例目录查看最新源码和支持的示例列表。进行工厂测试时，请按照[使用说明](#使用说明)选择与板载充电芯片匹配的环境。
 
-3. 烧录文件在项目文件根目录“[firmware](./firmware/)”文件下，里面有对firmware文件版本的说明，选择合适的版本下载即可。
+### 预编译固件
 
-<p align="center" width="100%">
-    <img src="image/10.png" alt="example">
-    <img src="image/11.png" alt="example">
-</p>
+以下是已经编译好的固件。
+
+烧录预编译固件时，可参考乐鑫官方 [ESP 固件在线烧录平台说明](https://docs.espressif.com/projects/esp-techpedia/zh_CN/latest/esp-friends/get-started/try-firmware/try-firmware-platform.html)。
+
+| 固件 | 烧录地址 | 说明 |
+| --- | --- | --- |
+| [`firmware/`](./firmware) | `0x0 (merged)` | T-QT-C6 出厂测试和睡眠示例固件 |
+
+> [!IMPORTANT]
+> 烧录 T-QT-C6 固件时选择 `ESP32-C6`。请根据文件名同时匹配 MCU 板版本和电池背板版本，不同硬件版本的固件不能混用。
+
+PlatformIO 编译产物位于 `.pio/build/<环境名称>/`。`firmware.bin` 是应用程序镜像，`firmware.factory.bin` 是包含引导程序、分区表、引导应用和程序固件的合并镜像。`.pio` 是临时生成目录，清理或重新编译时可能被重建，需要长期保留的固件请复制到其他目录。
+
+## 硬件模块
+
+| 模块 | 器件 | 接口或规格 |
+| :-- | :-- | :-- |
+| MCU 模组 | ESP32-C6-MINI-1U | RISC-V、160 MHz、Wi-Fi 6、低功耗蓝牙、IEEE 802.15.4 |
+| Flash | 芯片内置 | 4 MB |
+| PSRAM | — | 未配置 |
+| LCD | GC9107（早期）或 ST7735（最新） | 0.85 英寸、128 × 128、SPI |
+| 触摸 | CST816T | 电容触摸、I2C |
+| MCU V1.0/V1.1 充电芯片 | ETA4662 | I2C |
+| MCU V1.2 充电芯片 | SGM41562 | I2C |
+| 电池背板 IMU | LSM6DSL | 六轴加速度计和陀螺仪、I2C |
+| RGB 呼吸灯 | WS2812B/WS2812C | 单总线控制 |
 
 ## 引脚总览
 
-| 屏幕引脚       | ESP32C6引脚      |
-| :------------------: | :------------------:|
-| MOSI                     | IO15                  |
-| SCLK                  | IO18                  |
-| RST                    | IO20                  |
-| BL                      | IO2                  |
-| CS                    | IO14                  |
-| DC                    | IO19                  |
+开发板的引脚定义和硬件映射位于以下配置文件：
 
-| 电池相关引脚 | ESP32C6引脚      |
-| :------------------: | :------------------:|
-| BATTERY_MEASUREMENT_CONTROL  | IO8                  |
-| BATTERY_ADC_DATA                  | IO6                    |
+- [`pin_config.h`](./libraries/common/pin_config.h)
 
-| 呼吸灯引脚          | ESP32C6引脚      |
-| :------------------: | :------------------:|
-| BREATHING_LIGHT                  | IO9                  |
+## 功耗数据
 
-| 触摸芯片引脚          | ESP32C6引脚      |
-| :------------------: | :------------------:|
-| RST                  | IO23                  |
-| INT                  | IO7                    |
-| SDA                  | IO21                  |
-| SCL                  | IO22                  |
+以下数据使用 T-QT-C6 V1.2 测得，具体测试条件请参阅[功耗测试报告目录](./relevant_test)。
 
-| 睡眠唤醒引脚          | ESP32C6引脚      |
-| :------------------: | :------------------:|
-| SLEEP_WAKE_UP_INT      | IO7                  |
+| 模式 | 典型实测电流 |
+| :-- | :--: |
+| 轻度睡眠 | 553 µA |
+| 深度睡眠 | 170 µA |
 
-| 电源管理芯片引脚    | ESP32C6引脚      |
-| :------------------: | :------------------:|
-| SDA      | IO21                  |
-| SCL      | IO22                  |
+## 项目资料
 
-> #### T-QT-C6_V1.1-V1.2
-> | 惯性传感器引脚   | ESP32C6引脚      |
-> | :------------------: | :------------------:|
-> | SDA      | IO21                  |
-> | SCL      | IO22                  |
-> | LSM6DSL_IIC_ADDRESS_MODE      | IO3      |
-> | INT1      | IO0                  |
-> | INT2      | IO1                  |
-
-> #### T-QT-C6_V1.2
-> | 电源管理芯片引脚    | ESP32C6引脚      |
-> | :------------------: | :------------------:|
-> | INT      | IO4                  |
-
-## 相关测试
-
-### 功耗
-| Firmware | Program| Description | Picture |
-| ------  | ------  | ------ | ------ | 
-| [[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Light_Sleep]_firmware_V1.0.0.bin) | `Light_Sleep` | 功耗: 516.81uA <br /> 更多信息请查看 [功耗测试日志](./relevant_test/PowerConsumptionTestLog_[T-QT-C6_V1.2]_20241122.pdf) | <p align="center" width="10%"> <img src="image/13.png" alt="example" width="100%"> </p> |
-| [[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin](./firmware/[TQT-C6_V1.0-V1.2][Deep_Sleep]_firmware_V1.0.0.bin) | `Deep_Sleep` | 功耗: 172.61uA <br /> 更多信息请查看 [功耗测试日志](./relevant_test/PowerConsumptionTestLog_[T-QT-C6_V1.2]_20241122.pdf) |<p align="center" width="10%"> <img src="image/12.png" alt="example" width="100%"> </p> |
+- [原理图](./project)
+- [数据手册](./information)
+- [测试报告](./relevant_test)
+- [预编译固件](./firmware)
 
 ## 常见问题
 
-* Q. 看了以上教程我还是不会搭建编程环境怎么办？
-* A. 如果看了以上教程还不懂如何搭建环境的可以参考[LilyGo-Document](https://github.com/Xinyuan-LilyGO/LilyGo-Document)文档说明来搭建。
+<details>
+<summary>编译时提示缺少 Arduino_GFX 或 cpp_bus_driver 头文件</summary>
 
-<br />
+请初始化 Git 子模块后重新编译：
 
-* Q. 为什么打开Arduino IDE时他会提醒我是否要升级库文件？我应该升级还是不升级？
-* A. 选择不升级库文件，不同版本的库文件可能不会相互兼容所以不建议升级库文件。
+```bash
+git submodule update --init --recursive
+```
 
-<br />
+</details>
 
-* Q. 为什么我的板子上“Uart”接口没有输出串口数据，是不是坏了用不了啊？
-* A. 因为项目文件默认配置将USB接口作为Uart0串口输出作为调试，“Uart”接口连接的是Uart0，不经配置自然是不会输出任何数据的。<br />PlatformIO用户请打开项目文件“platformio.ini”，将“build_flags = xxx”下的选项“-DARDUINO_USB_CDC_ON_BOOT=true”修改成“-DARDUINO_USB_CDC_ON_BOOT=false”即可正常使用外部“Uart”接口。<br />Arduino用户打开菜单“工具”栏，选择USB CDC On Boot: “Disabled”即可正常使用外部“Uart”接口。
+<details>
+<summary>编译了错误的示例</summary>
 
-<br />
+请在 [`platformio.ini`](./platformio.ini) 中将 `default_envs` 设置为需要的示例。本项目根据该值生成 `src_dir`，因此只修改命令行环境名称并不足够。
 
-* Q. 为什么我的板子一直烧录失败呢？
-* A. 请按住“BOOT”按键重新下载程序。
+</details>
 
-## 项目
-* [T-QT-C6_V1.2](./project/T-QT-C6_V1.2)
+<details>
+<summary>无法开始上传或无法识别开发板</summary>
 
-## 资料
-* [Espressif](https://www.espressif.com/en/support/documents/technical-documents)
-* [ETA4662_V1.8](./information/ETA4662_V1.8.pdf)
-* [AN-CST816T-v1](./information/AN-CST816T-v1.pdf)
-* [WS2812B-2020](./information/WS2812B-2020.pdf)
-* [WS2812C-2020](./information/WS2812C-2020.pdf)
-* [SGMICRO-SGM41562XGTR](./information/SGMICRO-SGM41562XGTR.pdf)
-* [lsm6dsl](./information/lsm6dsl.pdf)
-* [lsm6dsl-stmicroelectronics_en](./information/lsm6dsl-stmicroelectronics_en.pdf)
+请使用支持数据传输的 USB 线连接开发板。如果无法自动进入下载模式，请按住 **BOOT** 按键并开始上传，在开始写入后松开按键。
 
-## 依赖库
-* [Arduino_DriveBus-1.1.16]()
-* [Arduino_GFX-1.3.7](https://github.com/moononournation/Arduino_GFX)
-* [lvgl-8.3.5](https://github.com/lvgl/lvgl)
+</details>
+
+<details>
+<summary>串口没有输出</summary>
+
+请使用 `115200` 波特率，并选择 ESP32-C6 的 USB Serial/JTAG 串口。本项目提供的 PlatformIO 配置已启用 USB CDC On Boot。
+
+</details>
+
+<details>
+<summary>编译生成的固件在哪里</summary>
+
+固件位于 `.pio/build/<环境名称>/`。如需单个完整工厂镜像，请使用 `firmware.factory.bin`。由于 `.pio` 是自动生成的编译目录，需要保留的镜像请及时复制到其他位置。
+
+</details>

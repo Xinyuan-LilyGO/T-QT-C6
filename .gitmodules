@@ -1,0 +1,6 @@
+[submodule "libraries/cpp_bus_driver"]
+	path = libraries/cpp_bus_driver
+	url = https://github.com/Llgok/cpp_bus_driver.git
+[submodule "libraries/Arduino_GFX"]
+	path = libraries/Arduino_GFX
+	url = https://github.com/moononournation/Arduino_GFX.git

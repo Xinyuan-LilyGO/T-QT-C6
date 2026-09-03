@@ -45,6 +45,29 @@ double roll, pitch;
 double accX, accY, accZ;
 double gyroX, gyroY, gyroZ;
 
+namespace {
+/**
+ * @brief 将充电状态转换为显示字符串
+ * @param charge_status 充电状态
+ * @return 返回充电状态字符串
+ */
+const char* ChargeStatusToString(
+    cpp_bus_driver::Sgm41562xx::ChargeStatus charge_status) {
+  switch (charge_status) {
+    case cpp_bus_driver::Sgm41562xx::ChargeStatus::kNotCharging:
+      return "Not charging";
+    case cpp_bus_driver::Sgm41562xx::ChargeStatus::kPrecharge:
+      return "Precharge";
+    case cpp_bus_driver::Sgm41562xx::ChargeStatus::kCharging:
+      return "Charging";
+    case cpp_bus_driver::Sgm41562xx::ChargeStatus::kChargeComplete:
+      return "Charge complete";
+    default:
+      return "Unknown";
+  }
+}
+}  // namespace
+
 void Btn_Start_Testing_Initialization(lv_ui *ui)
 {
     // Write codes Test_btn_1
@@ -368,10 +391,10 @@ void Window_IMU_Test_Initialization()
     LSM6DSL->IIC_Write_Device_Value(LSM6DSL->Arduino_IIC_IMU::Device_Value::IMU_GYROSCOPE_SENSITIVITY,
                                     2000);
 
-    gfx->fillScreen(WHITE);
+    gfx->fillScreen(RGB565_WHITE);
     // Serial.printf("\nStart calibrating the gyroscope and accelerometer\n");
     // gfx->setCursor(10, 60);
-    // gfx->setTextColor(RED);
+    // gfx->setTextColor(RGB565_RED);
     // gfx->printf("Start calibrating the gyroscope and accelerometer");
     // delay(1000);
     // 将器件静止后再校正陀螺仪传感器
@@ -381,18 +404,18 @@ void Window_IMU_Test_Initialization()
     //     Serial.printf("\nLSM6DSL gyroscope correction fail\n");
     //     Serial.printf("Please ensure that the device is in a stationary state!\n\n");
 
-    //     gfx->fillScreen(WHITE);
+    //     gfx->fillScreen(RGB565_WHITE);
     //     gfx->setCursor(10, 60);
-    //     gfx->setTextColor(RED);
+    //     gfx->setTextColor(RGB565_RED);
     //     gfx->printf("LSM6DSL gyroscope correction fail\nPlease ensure that the device is in a stationary state!");
     //     delay(1000);
     // }
     // else
     // {
     // Serial.printf("LSM6DSL gyroscope correction successfully\n");
-    // gfx->fillScreen(WHITE);
+    // gfx->fillScreen(RGB565_WHITE);
     // gfx->setCursor(10, 60);
-    // gfx->setTextColor(RED);
+    // gfx->setTextColor(RGB565_RED);
     // gfx->printf("LSM6DSL gyroscope correction successfully");
 
     // 将器件正放静止后再校正加速度传感器
@@ -402,24 +425,24 @@ void Window_IMU_Test_Initialization()
     // {
     //     Serial.printf("\nLSM6DSL acceleration correction fail\n");
     //     Serial.printf("Please ensure that the device is in a stationary state!\n\n");
-    //     gfx->fillScreen(WHITE);
+    //     gfx->fillScreen(RGB565_WHITE);
     //     gfx->setCursor(10, 60);
-    //     gfx->setTextColor(RED);
+    //     gfx->setTextColor(RGB565_RED);
     //     gfx->printf("LSM6DSL acceleration correction fail\nPlease ensure that the device is in a stationary state!");
     //     delay(1000);
     // }
     // else
     // {
     //     Serial.printf("LSM6DSL acceleration correction successfully\n\n");
-    //     gfx->fillScreen(WHITE);
+    //     gfx->fillScreen(RGB565_WHITE);
     //     gfx->setCursor(10, 60);
-    //     gfx->setTextColor(RED);
+    //     gfx->setTextColor(RGB565_RED);
     //     gfx->printf("LSM6DSL acceleration correction successfully");
     //     delay(1000);
 
-    // gfx->fillScreen(WHITE);
-    // gfx->drawRect(14, 0, 100, 100, RED);
-    // gfx->fillCircle(64, 50, 3, RED);
+    // gfx->fillScreen(RGB565_WHITE);
+    // gfx->drawRect(14, 0, 100, 100, RGB565_RED);
+    // gfx->fillCircle(64, 50, 3, RGB565_RED);
 
     // CIT_UI.Window_Initialization_Flag = true;
     // }
@@ -458,11 +481,11 @@ void Window_LCD_Display_Color_Test_Loop(void)
     {
         CIT_UI.Window_Button_Start_Testing_Flag = false;
 
-        gfx->fillScreen(RED);
+        gfx->fillScreen(RGB565_RED);
         delay(3000);
-        gfx->fillScreen(GREEN);
+        gfx->fillScreen(RGB565_LIME);
         delay(3000);
-        gfx->fillScreen(BLUE);
+        gfx->fillScreen(RGB565_BLUE);
         delay(3000);
         gfx->draw16bitRGBBitmap(0, 0, (uint16_t *)gImage_1, 128, 128);
         delay(3000);
@@ -542,14 +565,22 @@ void Window_Power_Test_Loop(void)
     String temp;
     String temp2;
 
-    int32_t Device_ID = SGM41562->IIC_Device_ID();
-    String Battery_Status = SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_BATTERY_FAULT_STATUS);
+    uint8_t Device_ID = 0;
+    cpp_bus_driver::Sgm41562xx::FaultStatus irq_status;
+    cpp_bus_driver::Sgm41562xx::ChipStatus chip_status;
+    cpp_bus_driver::Sgm41562xx::ChargerConfig charger_config;
+    const bool id_ok = SGM41562->GetChipId(Device_ID);
+    const bool irq_ok = SGM41562->GetFaultStatus(irq_status);
+    const bool chip_status_ok = SGM41562->GetChipStatus(chip_status);
+    const bool config_ok = SGM41562->GetChargerConfig(charger_config);
+    String Battery_Status = irq_ok
+                                ? (irq_status.battery_overvoltage_fault ? "Overvoltage" : "Normal")
+                                : "Read failed";
     uint32_t Battery_Voltage = 0;
 
     if (Battery_Status != "Normal") // 如果电池处于故障状态（这种状态只有在充电时候未接电池或者超过设置的目标充电电压过多才会导致）
     {
-        SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                         SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+        SGM41562->SetChargeEnable(false);
         Battery_Voltage = 0;
         delay(1000);
     }
@@ -569,27 +600,27 @@ void Window_Power_Test_Loop(void)
 
         // if (Battery_Voltage > 2500) // 电池电压大于2.5V就充电否则一律不充电
         // {
-        SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                         SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
+        SGM41562->SetChargeEnable(true);
         // }
         // else
         // {
-        //     SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-        //                                      SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+        //     SGM41562->SetChargeEnable(false);
         // }
     }
 
     temp = "ID: ";
     temp += (String)Device_ID;
     temp += "\nDevice: ";
-    if (Device_ID == 0B00000100)
+    if (id_ok)
     {
-        temp += "SGM41562";
+        temp += cpp_bus_driver::Sgm41562xx::ChipTypeToString(SGM41562->GetChipType());
         temp += "\n";
         temp += "\nBattery Fault Status: ";
         temp += Battery_Status;
         temp += "\nCharging Status: ";
-        temp += SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_CHARGING_STATUS);
+        temp += chip_status_ok
+                    ? ChargeStatusToString(chip_status.charge_status)
+                    : "Read failed";
 
         temp += "\n";
         temp += "\nBattery Voltage: ";
@@ -598,27 +629,27 @@ void Window_Power_Test_Loop(void)
 
         temp += "\n";
         temp += "\nInput Minimum Voltage Limit: ";
-        temp += SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_MINIMUM_INPUT_VOLTAGE_LIMIT);
+        temp += config_ok ? charger_config.minimum_input_voltage_limit_mv : 0;
         temp += " mV";
         temp += "\nCharging Target Voltage Limit: ";
-        temp += SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_CHARGING_TARGET_VOLTAGE_LIMIT);
+        temp += config_ok ? charger_config.charge_voltage_limit_mv : 0;
         temp += " mV";
         temp += "\nSystem Voltage Limit: ";
-        temp += SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_SYSTEM_VOLTAGE_LIMIT);
+        temp += config_ok ? charger_config.system_voltage_regulation_mv : 0;
         temp += " mV";
 
         temp += "\n";
         temp += "\nInput Current Limit: ";
-        temp += SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_INPUT_CURRENT_LIMIT);
+        temp += config_ok ? charger_config.input_current_limit_ma : 0;
         temp += " mA";
         temp += "\nFast Charge Current Limit: ";
-        temp += SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_FAST_CHARGING_CURRENT_LIMIT);
+        temp += config_ok ? charger_config.fast_charge_current_ma : 0;
         temp += " mA";
         temp += "\nTermination And Precondition Charge Current Limit: ";
-        temp += SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_TERMINATION_PRECHARGE_CHARGING_CURRENT_LIMIT);
+        temp += config_ok ? charger_config.termination_current_ma : 0;
         temp += " mA";
         temp += "\nBAT To SYS Discharge Current Limit: ";
-        temp += SGM41562->IIC_Read_Device_Value(SGM41562->Arduino_IIC_Power::Value_Information::POWER_BAT_TO_SYS_DISCHARGE_CURRENT_LIMIT);
+        temp += config_ok ? charger_config.discharge_current_limit_ma : 0;
         temp += " mA";
     }
     else
@@ -945,18 +976,21 @@ void Window_IMU_Test_Loop(void)
     {
         roll = -90 - (roll + 90);
     }
-    gfx->fillRect(14 + 1, 0 + 1, 100 - 2, 100 - 2, WHITE);
-    gfx->fillCircle(64, 50, 2, RED);
+    gfx->fillRect(14 + 1, 0 + 1, 100 - 2, 100 - 2, RGB565_WHITE);
+    gfx->fillCircle(64, 50, 2, RGB565_RED);
     gfx->drawCircle(64 + (pitch * ((50.0 - 5.0 - 1.0) / 90.0)),
-                    50 + (roll * ((50.0 - 5.0 - 1.0) / 90.0)), 5, ORANGE);
+                    50 + (roll * ((50.0 - 5.0 - 1.0) / 90.0)), 5, RGB565_ORANGE);
 
-    String Battery_Status = SGM41562->IIC_Read_Device_State(SGM41562->Arduino_IIC_Power::Status_Information::POWER_BATTERY_FAULT_STATUS);
+    cpp_bus_driver::Sgm41562xx::FaultStatus irq_status;
+    const bool irq_ok = SGM41562->GetFaultStatus(irq_status);
+    String Battery_Status = irq_ok
+                                ? (irq_status.battery_overvoltage_fault ? "Overvoltage" : "Normal")
+                                : "Read failed";
     uint32_t Battery_Voltage = 0;
 
     if (Battery_Status != "Normal") // 如果电池处于故障状态（这种状态只有在充电时候未接电池或者超过设置的目标充电电压过多才会导致）
     {
-        SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                         SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+        SGM41562->SetChargeEnable(false);
         Battery_Voltage = 0;
         delay(1000);
     }
@@ -969,18 +1003,16 @@ void Window_IMU_Test_Loop(void)
 
     if (Battery_Voltage > 3000) // 电池电压大于3V就充电否则一律不充电
     {
-        SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                         SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_ON); // 充电
+        SGM41562->SetChargeEnable(true);
     }
     else
     {
-        SGM41562->IIC_Write_Device_State(SGM41562->Arduino_IIC_Power::Device::POWER_DEVICE_CHARGING_MODE,
-                                         SGM41562->Arduino_IIC_Power::Device_State::POWER_DEVICE_OFF); // 充电
+        SGM41562->SetChargeEnable(false);
     }
 
     Serial.printf("%.6f,%.6f,%.6f,%.6f\n", (float)-200, (float)200, roll, pitch);
-    gfx->fillRect(0, 102, 128, 26, WHITE);
-    gfx->setTextColor(RED);
+    gfx->fillRect(0, 102, 128, 26, RGB565_WHITE);
+    gfx->setTextColor(RGB565_RED);
 
     gfx->setCursor(40, 107);
     gfx->printf("BAT:%s mV", (String)Battery_Voltage);
