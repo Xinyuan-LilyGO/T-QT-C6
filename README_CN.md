@@ -155,7 +155,7 @@ PlatformIO 编译产物位于 `.pio/build/<环境名称>/`。`firmware.bin` 是�
 | MCU V1.0/V1.1 充电芯片 | ETA4662 | I2C |
 | MCU V1.2 充电芯片 | SGM41562 | I2C |
 | 电池背板 IMU | LSM6DSL | 六轴加速度计和陀螺仪、I2C |
-| RGB 呼吸灯 | WS2812B/WS2812C | 单总线控制 |
+| RGB 呼吸灯 | — | 单线控制 |
 
 ## 引脚总览
 

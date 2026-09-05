@@ -155,7 +155,7 @@ PlatformIO build artifacts are written to `.pio/build/<environment>/`. `firmware
 | Charger, MCU V1.0/V1.1 | ETA4662 | I2C |
 | Charger, MCU V1.2 | SGM41562 | I2C |
 | IMU, battery backboard | LSM6DSL | 6-axis accelerometer and gyroscope, I2C |
-| RGB breathing LED | WS2812B/WS2812C | One-wire control |
+| RGB breathing LED | — | One-wire control |
 
 ## Pin Overview
 
