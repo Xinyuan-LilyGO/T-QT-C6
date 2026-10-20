@@ -1,4 +1,4 @@
-# T-QT-C6 Air Mouse
+# T-QT-C6 Air Mouse(Demo)
 ## *AI generated
 
 Modular Arduino IDE firmware for a LILYGO T-QT-C6 with the optional
